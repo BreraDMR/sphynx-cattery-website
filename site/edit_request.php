@@ -1,39 +1,52 @@
 <?php
+
+declare(strict_types=1);
+
+use App\RequestRepository;
+use App\RequestStatus;
+use App\RequestValidator;
+
 require_once 'config/auth.php';
 require_admin();
 require_once 'config/db.php';
 include 'includes/header.php';
 
-// Cast to int: the original echoed $_GET['id'] straight into the page
-// (see line below, fixed) and relied on MySQL's loose string-to-int
-// comparison to find a row, which is a reflected-XSS vector for any id
-// that has a valid numeric prefix (see docs/report.md Editor's notes).
-$id = isset($_GET['id']) ? (int)$_GET['id'] : null;
-if (!$id) die('ID не передано');
+$repo = new RequestRepository($pdo);
 
-$stmt = $pdo->prepare("SELECT * FROM requests WHERE id = ?");
-$stmt->execute([$id]);
-$request = $stmt->fetch(PDO::FETCH_ASSOC);
+$id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+if (!$id) {
+    die('ID не передано');
+}
 
-if (!$request) die('Запис не знайдено');
+$request = $repo->find($id);
+if ($request === null) {
+    die('Запис не знайдено');
+}
 
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!csrf_verify($_POST['csrf_token'] ?? null)) {
+        http_response_code(403);
+        die('Невірний запит.');
+    }
+
     $name    = trim($_POST['name'] ?? '');
     $email   = trim($_POST['email'] ?? '');
     $phone   = trim($_POST['phone'] ?? '');
     $message = trim($_POST['message'] ?? '');
+    $status  = $_POST['status'] ?? $request->status;
 
-    if ($name === '') $errors[] = "Вкажіть ПІБ";
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Некоректний email";
+    $errors = RequestValidator::validate($name, $email, $message, true, requireConsent: false);
+    if (!RequestStatus::isValid($status)) {
+        $errors[] = 'Невірний статус.';
+    }
 
     if (empty($errors)) {
-        $sql = "UPDATE requests SET name=?, email=?, phone=?, message=? WHERE id=?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$name, $email, $phone, $message, $id]);
+        $repo->update($id, $name, $email, $phone ?: null, $message);
+        $repo->updateStatus($id, $status);
 
-        header("Location: requests.php");
+        header('Location: requests.php');
         exit;
     }
 }
@@ -46,17 +59,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php endforeach; ?>
 
 <form method="POST">
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+
     <label>ПІБ <span>*</span></label>
-    <input type="text" name="name" value="<?= htmlspecialchars($request['name']) ?>" required>
+    <input type="text" name="name" value="<?= htmlspecialchars($request->name) ?>" required>
 
     <label>Email <span>*</span></label>
-    <input type="email" name="email" value="<?= htmlspecialchars($request['email']) ?>" required>
+    <input type="email" name="email" value="<?= htmlspecialchars($request->email) ?>" required>
 
     <label>Телефон</label>
-    <input type="tel" name="phone" value="<?= htmlspecialchars($request['phone'] ?? '') ?>">
+    <input type="tel" name="phone" value="<?= htmlspecialchars($request->phone ?? '') ?>">
 
     <label>Повідомлення</label>
-    <textarea name="message" rows="5" required><?= htmlspecialchars($request['message']) ?></textarea>
+    <textarea name="message" rows="5" required><?= htmlspecialchars($request->message) ?></textarea>
+
+    <label>Статус</label>
+    <select name="status">
+        <?php foreach (RequestStatus::all() as $status): ?>
+            <option value="<?= htmlspecialchars($status) ?>" <?= $status === $request->status ? 'selected' : '' ?>>
+                <?= htmlspecialchars(RequestStatus::ukrainianLabel($status)) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
 
     <button type="submit" class="button">Оновити заявку</button>
 </form>

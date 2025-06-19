@@ -528,6 +528,50 @@ form {
     color: red;
 }
 
+/* Status filter pills / pagination on admin_requests.php */
+.status-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.button.active {
+    background: #000;
+    color: #fff;
+}
+
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.status-new {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-in_progress {
+    background: #cfe2ff;
+    color: #084298;
+}
+
+.status-closed {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
 /* ==========================================================================
    Таблиці (admin_requests.php)
    ========================================================================== */

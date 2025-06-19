@@ -1,1 +1,4 @@
 data/data.txt
+vendor/
+.env
+.phpunit.result.cache
