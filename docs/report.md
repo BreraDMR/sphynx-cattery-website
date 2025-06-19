@@ -141,6 +141,36 @@ unit tests — **7/7 pass**, no PHP or database needed for that part.
     accumulated real-looking test submissions (including what looked like
     a personal email address) and should never have been committed.
 
+### Found on a second pass, after the fixes above
+
+11. **The hero background image was actually broken.** `style.css`'s
+    `.hero` rule pointed at `../../image/hero-sphynx.jpg` -- the exact
+    `image/` folder removed in note #10 above. The image quietly 404'd in
+    every browser; nothing in the HTML pointed this out because it's a CSS
+    `url()`, not an `<img>` tag. Fixed to `../images/hero-sphynx.jpg`.
+12. **No favicon.** Every page load left a 404 for `/favicon.ico` in the
+    console. Added `assets/images/favicon.ico` (cropped from the existing
+    logo) and linked it from every page.
+13. **Filter buttons had no active state.** The color filter buttons
+    (`.filter-btn`) had zero CSS of their own -- clicking one toggled the
+    `active` class in JS, but nothing made the selected filter visually
+    different from the rest. Added a simple opacity/border treatment for
+    `.filter-btn.active`.
+14. **The delete button needed a style reset.** Turning "Видалити" from an
+    `<a>` into a real `<button>` inside a `<form>` (note #2 above) meant
+    it would otherwise pick up the browser's default button chrome instead
+    of looking like the plain red inline link it always had. Reset
+    `.delete-link`'s background/border/padding/font to match.
+15. **Three nav links and one hero CTA pointed at `#` even though the
+    content they should point to already existed.** "Каталог сфінксів" in
+    the nav (on all three public pages) and the homepage's "ОТРИМАТИ
+    КОНСУЛЬТАЦІЮ" button didn't go anywhere. Pointed the catalog links at
+    `index.html#catalog` (added that `id`) and the CTA at `contacts.html`.
+    The remaining `#` links ("Кошик", "Доставка", per-cat "Дізнатися
+    більше") are left as-is -- a shopping cart, a delivery-info page, and
+    individual cat detail pages were never part of this course's scope, so
+    building them out would be scope creep rather than a fix.
+
 None of this changes what the project actually demonstrates academically
 (СРС4–6, ЛР7–10 are all still here, doing what they were meant to do) --
 it just makes the demonstration work end-to-end and removes the parts that
