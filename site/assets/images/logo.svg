@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 70" role="img" aria-label="Лисі Котики Прага">
+  <g fill="#ff9800">
+    <!-- minimalist sphynx head: big ears, no fur texture -->
+    <path d="M14 46 L24 14 L34 34 Z" />
+    <path d="M54 46 L44 14 L34 34 Z" />
+    <circle cx="34" cy="42" r="20" />
+  </g>
+  <g fill="#1a1a1a">
+    <circle cx="27" cy="40" r="2.6" />
+    <circle cx="41" cy="40" r="2.6" />
+    <path d="M30 49 q4 4 8 0" stroke="#1a1a1a" stroke-width="2" fill="none" stroke-linecap="round" />
+  </g>
+  <text x="70" y="38" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#ffffff">ЛИСІ КОТИКИ</text>
+  <text x="70" y="56" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" letter-spacing="2" fill="#ff9800">ПРАГА</text>
+</svg>

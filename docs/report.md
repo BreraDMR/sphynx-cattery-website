@@ -50,16 +50,17 @@ summarized in "Architecture" below.
 
 | Path | Contents |
 |---|---|
-| `index.html`, `about.html`, `contacts.html` | Public pages. |
+| `index.html`, `about.html`, `contacts.html`, `delivery.html` | Public pages. |
+| `cat.php` | Per-kitten detail page, reads the `cats` table via `CatRepository`. |
 | `api.php` | Public contact-form endpoint (СРС4/5/6). |
+| `api/cats.php` | Kitten catalog endpoint: public `GET`, `X-API-Key`-gated `GET ?all=1`/`POST`/`DELETE` for the Telegram bot — see Editor's note #24. |
 | `login.php` / `logout.php` | Admin session login — see Editor's notes #1. |
 | `admin_requests.php` | Read-oriented admin dashboard: status filter pills + pagination over the `requests` table. |
 | `requests.php`, `create_request.php`, `edit_request.php`, `delete_request.php` | The create/update/delete side of admin CRUD (СРС6) — `edit_request.php` also changes a request's status. |
-| `src/RequestRepository.php` | All SQL for the `requests` table, in one place — see "Architecture". |
-| `src/RequestRecord.php` | Immutable read model for one row. |
-| `src/RequestValidator.php` | The one validation ruleset, shared by `api.php`/`create_request.php`/`edit_request.php`. |
-| `src/RequestStatus.php` | The `new`/`in_progress`/`closed` status codes and their Ukrainian labels. |
-| `tests/` | PHPUnit tests for the four classes above. |
+| `src/RequestRepository.php`, `src/RequestRecord.php`, `src/RequestValidator.php`, `src/RequestStatus.php` | All SQL/validation/status-labels for the `requests` table — see "Architecture". |
+| `src/CatRepository.php`, `src/CatRecord.php`, `src/CatValidator.php` | Same shape as the `Request*` classes above, for the `cats` table. |
+| `src/CatPhotoUploader.php` | Resizes an uploaded kitten photo and re-encodes it to WebP (GD) — used by `api/cats.php`'s `POST`. |
+| `tests/` | PHPUnit tests for all of the above. |
 | `config/db.php` | PDO connection, reading from `.env`. |
 | `config/env.php` | The `.env` loader (`load_env()`/`env()`). |
 | `config/auth.php`, `config/admin_credentials.php` | Session/CSRF helpers and the demo admin login (credentials from `.env`). |
@@ -67,7 +68,7 @@ summarized in "Architecture" below.
 | `composer.json`, `phpunit.xml` | Autoloading (`App\` → `src/`, `Tests\` → `tests/`) and the PHPUnit suite config. |
 | `database.sql` | Schema + seed data, import this first. |
 | `demo-queries.sql` | Example SELECT/UPDATE/DELETE queries for СРС6 (kept separate from the schema file — see Editor's notes #8). |
-| `assets/data/cats.json`, `assets/data/reviews.json` | Static data behind the catalog filter (СРС4) and the reviews loader (ЛР9). |
+| `assets/data/reviews.json` | Static data behind the reviews loader (ЛР9). The catalog's own `cats.json` fixture (СРС4) was retired in favor of the real `cats` table — see Editor's note #24. |
 
 ## Architecture
 
@@ -277,3 +278,58 @@ academically
 (СРС4–6, ЛР7–10 are all still here, doing what they were meant to do) --
 it just makes the demonstration work end-to-end and removes the parts that
 would be embarrassing or unsafe to show someone.
+
+### Third pass — turning the catalog into a real product, with a Telegram bot for adding kittens
+
+Note #15 above explicitly left "Кошик", "Доставка", and per-cat detail pages
+as out of scope for the coursework. Damir later asked to go further than
+the coursework brief and finish the site into something that looks and
+works like a real product end-to-end, including automating new kitten
+cards through a Telegram bot. That changed the scope, so those three items
+came back into play -- this pass's notes pick up at #22.
+
+22. **The logo was a watermarked stock photo; four "icons" were unused
+    Windows resource files.** `assets/images/logo.png`, used in the header
+    of every page, turned out to be a DNGtree stock-photo watermark image
+    (2500×1669, 728KB) -- not licensed for this. `icon1.png`–`icon4.png`
+    (≈100KB each) were `.ico` files in disguise containing an unrelated
+    oscilloscope/electronics icon, and weren't referenced from any HTML or
+    CSS at all. Replaced the logo with an original, hand-written inline SVG
+    wordmark (under 1KB); deleted the four unused icon files outright.
+23. **Catalog/hero/manager photos were unoptimized.** `sphynx-blue.jpg`
+    shipped at JPEG quality 100 with no resizing (1080×1350, 488KB) for a
+    card that displays at 220px tall. Resized and re-encoded every photo
+    (catalog kittens, hero background, manager avatars) to WebP --
+    combined image weight for `assets/images/` dropped from roughly 1.5MB
+    to about 190KB.
+24. **The catalog had no backend, no detail page, and a cart button that
+    went nowhere.** `assets/data/cats.json` was a static fixture with no
+    create/update/delete; "Дізнатися більше" and "Кошик (0)" both pointed
+    at `#`. Added a real `cats` table plus `CatRepository`/`CatRecord`/
+    `CatValidator` (same shape as the `Request*` classes), a `cat.php`
+    detail page per kitten, and `api/cats.php` -- public read access for
+    visitors, `X-API-Key`-gated create/list-all/delete for
+    [sphynx-cats-crm-bot](https://github.com/BreraDMR/sphynx-cats-crm-bot),
+    the companion Telegram bot used to add new kittens. The cart link was
+    removed rather than built out: live kittens go through the existing
+    contact/booking flow, not a shopping cart, so a fake "add to cart"
+    button would be more dishonest than no cart at all.
+25. **Three stock photos covered six kittens, and one was mislabeled.**
+    "Кремовий Сфінкс Сіммі" (cream-colored) actually used the *white*
+    kitten's photo -- there was no cream photo at all. Sourced two
+    additional free-license photos (cream and lilac/grey) so the catalog
+    has seven kittens across five genuinely distinct colors, each with its
+    own picture.
+26. **The site's own contact details looked real enough to be mistaken for
+    a real business.** The phone (`+420 777 123 456`) and email
+    (`info@sphynx-prague.cz`) shown in every header/footer read as a
+    plausible real Czech business, despite this being an explicitly
+    fictional learning project. Replaced everywhere with values that read
+    as obviously placeholder (`+420 123 456 789`, `info@example.com`).
+27. **"Доставка" was a dead nav link on every page.** Added a real
+    `delivery.html` page (regions/timelines, what's included) instead of
+    leaving it pointed at `#`.
+
+38 PHPUnit tests now pass (23 → 38: `CatRepository`/`CatValidator` added
+alongside the existing `Request*` suite), against the same in-memory SQLite
+setup as before.

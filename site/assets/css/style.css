@@ -121,7 +121,7 @@ section {
 /* ==================== HERO ==================== */
 .hero {
     background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
-                url('../images/hero-sphynx.jpg') center/cover no-repeat;
+                url('../images/hero-sphynx.webp') center/cover no-repeat;
     color: white;
     text-align: center;
     padding: 120px 20px;
@@ -155,6 +155,30 @@ section {
     height: 220px;
     object-fit: cover;
     border-radius: 8px;
+}
+
+/* ==================== CAT DETAIL PAGE (cat.php) ==================== */
+.cat-detail {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.cat-detail-image {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.cat-detail-info {
+    flex: 1;
+    min-width: 260px;
+}
+
+.cat-detail-info .button {
+    margin: 6px 6px 0 0;
 }
 
 /* ==================== SECTIONS LAYOUT ==================== */
