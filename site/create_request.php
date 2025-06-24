@@ -8,7 +8,6 @@ use App\RequestValidator;
 require_once 'config/auth.php';
 require_admin();
 require_once 'config/db.php';
-include 'includes/header.php';
 
 $repo = new RequestRepository($pdo);
 $errors = [];
@@ -36,6 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
+
+// header.php prints HTML, so it has to come AFTER the block above -- a
+// successful create redirects via header('Location: ...'), which fails
+// with "headers already sent" if header.php has already flushed output.
+include 'includes/header.php';
 ?>
 
 <h2 class="section-title">Додати нову заявку</h2>
