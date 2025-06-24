@@ -1,3 +1,5 @@
+> 🌐 **Live demo (auto-updated each restart):** https://ideal-driving-asp-city.trycloudflare.com  <!-- live-url -->
+
 # Sphynx Cattery Website — PHP/MySQL Coursework Project
 
 A small full-stack web project: a fictional Sphynx-cat cattery storefront
