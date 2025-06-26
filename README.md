@@ -1,6 +1,20 @@
 > 🌐 **Live demo (auto-updated each restart):** https://reliance-around-kelkoo-cure.trycloudflare.com  <!-- live-url -->
 
-# Sphynx Cattery Website — PHP/MySQL
+<div align="center">
+
+# 🐱 Sphynx Cattery Website
+
+**A full-stack, trilingual PHP/MySQL storefront — accounts & roles, a cart, an admin panel, and AI-assisted catalog editing from Telegram.**
+
+[![PHP](https://img.shields.io/badge/PHP-8.3-777BB4?logo=php&logoColor=white&style=for-the-badge)](site/)
+[![MySQL](https://img.shields.io/badge/MariaDB-MySQL-4479A1?logo=mariadb&logoColor=white&style=for-the-badge)](site/database.sql)
+[![PHPUnit](https://img.shields.io/badge/PHPUnit-61%20passing-brightgreen?style=for-the-badge)](site/tests/)
+[![OAuth 2.0](https://img.shields.io/badge/OAuth%202.0-Google%20%2F%20GitHub-EA4335?logo=google&logoColor=white&style=for-the-badge)](site/oauth.php)
+[![i18n](https://img.shields.io/badge/i18n-EN%20%C2%B7%20CS%20%C2%B7%20UK-blueviolet?style=for-the-badge)](site/lang/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white&style=for-the-badge)](site/)
+[![license](https://img.shields.io/badge/license-PolyForm--NC-blue?style=for-the-badge)](LICENSE)
+
+</div>
 
 A full-stack web project: a fictional Sphynx-cat cattery storefront
 ("Лисі Котики Прага", Prague) with a multilingual front end, two MySQL-backed
@@ -14,6 +28,18 @@ Y. O. Paton Vocational College of Welding and Electronics (specialty 123,
 Computer Engineering) and was then grown into something closer to a real
 product, end to end. It's a **learning/portfolio project**, not a real
 business — you can't actually buy a cat here.
+
+## Screenshots
+
+<div align="center">
+  <img src="docs/screenshots/homepage.png" width="800" alt="Homepage — kitten catalog"/>
+  <br/><sub><b>Homepage</b> — trilingual storefront, kitten catalog rendered from a JSON API.</sub>
+  <br/><br/>
+  <img src="docs/screenshots/admin.png" width="400" alt="Admin panel — requests"/>
+  &nbsp;
+  <img src="docs/screenshots/contacts.png" width="400" alt="Contacts & booking form"/>
+  <br/><sub><b>Left:</b> role-gated admin panel (booking requests) &nbsp;·&nbsp; <b>Right:</b> public contact / booking form.</sub>
+</div>
 
 ## The problems it solves
 
