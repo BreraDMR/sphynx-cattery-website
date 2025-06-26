@@ -129,3 +129,14 @@ function locale_label(string $locale): string
         default => strtoupper($locale),
     };
 }
+
+/** Flag emoji for the language switcher (regional-indicator pairs). */
+function locale_flag(string $locale): string
+{
+    return match ($locale) {
+        'en' => '🇬🇧',
+        'cs' => '🇨🇿',
+        'uk' => '🇺🇦',
+        default => '🏳️',
+    };
+}

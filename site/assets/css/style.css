@@ -645,7 +645,7 @@ form {
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 10px;
     flex-wrap: wrap;
     justify-content: center;
 }
@@ -655,46 +655,94 @@ form {
     line-height: 0;
 }
 
+/* Language switcher — flag pills, identical layout on desktop and mobile */
 .lang-switch {
-    display: flex;
+    display: inline-flex;
+    align-items: center;
     gap: 4px;
-    border: 1px solid #444;
-    border-radius: 6px;
-    overflow: hidden;
+    background: #2a2a2a;
+    border-radius: 999px;
+    padding: 4px;
 }
 
 .lang-link {
-    color: #ccc;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 28px;
+    border-radius: 999px;
+    font-size: 17px;
+    line-height: 1;
     text-decoration: none;
-    font-weight: bold;
-    font-size: 13px;
-    padding: 4px 8px;
+    filter: grayscale(55%);
+    opacity: 0.7;
+    transition: filter .15s, opacity .15s, background .15s;
 }
 
 .lang-link:hover {
-    color: #ff9800;
+    filter: none;
+    opacity: 1;
 }
 
 .lang-link.active {
     background: #ff9800;
-    color: #000;
+    filter: none;
+    opacity: 1;
 }
 
-.header-actions .auth-link,
-.header-actions .account-link {
-    color: #fff;
-    text-decoration: none;
+/* Auth buttons — one cohesive pair (no "pretty + plain text" mismatch) */
+.btn-ghost,
+.btn-solid,
+.btn-account {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 6px;
     font-weight: bold;
+    font-size: 15px;
+    line-height: 1;
+    text-decoration: none;
     white-space: nowrap;
 }
 
-.header-actions .auth-link:hover,
-.header-actions .account-link:hover {
+.btn-ghost {
+    color: #fff;
+    background: transparent;
+    border: 1.5px solid #555;
+}
+
+.btn-ghost:hover {
+    border-color: #ff9800;
     color: #ff9800;
 }
 
-.auth-register {
-    padding: 6px 16px;
+.btn-solid {
+    color: #000;
+    background: #ff9800;
+    border: 1.5px solid #ff9800;
+}
+
+.btn-solid:hover {
+    filter: brightness(1.06);
+}
+
+.btn-account {
+    color: #fff;
+    background: #2a2a2a;
+    border: 1.5px solid #555;
+    max-width: 170px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-account:hover {
+    border-color: #ff9800;
+}
+
+.btn-account__icon {
+    font-size: 14px;
 }
 
 .cart-link {
@@ -722,6 +770,23 @@ form {
 
 .nav-admin {
     color: #ff9800 !important;
+}
+
+/* Catalog / treats filter buttons — flex row that wraps cleanly (they used
+   to overlap on narrow phones because they were loose inline-blocks). */
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.filter-row .button {
+    padding: 9px 18px;
+}
+
+.search-input {
+    max-width: 100%;
 }
 
 /* ==========================================================================

@@ -126,7 +126,12 @@ function treatCardHtml(treat) {
 
 // ── Boot ─────────────────────────────────────────────────────────────────
 window.addEventListener('load', () => {
-    renderHeroGreeting();
+    // The time-of-day greeting replaces the hero subtitle -- only do that on
+    // the home page (which has the catalog), not on contacts/about/delivery,
+    // where the hero subtitle is real page copy.
+    if (document.getElementById('catsContainer')) {
+        renderHeroGreeting();
+    }
 
     // Mobile menu
     const mobileBtn = document.getElementById('mobileMenuBtn');

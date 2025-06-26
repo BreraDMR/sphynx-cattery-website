@@ -25,7 +25,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="text-center mb-30">
             <input type="text" id="treatSearchInput" class="search-input" placeholder="<?= te('treats.search') ?>">
 
-            <div class="mt-15">
+            <div class="mt-15 filter-row">
                 <button class="button treat-filter-btn active" data-category="all"><?= te('treats.cat.all') ?></button>
                 <?php foreach (TREAT_CATEGORY_KEYS as $__cat => $__key): ?>
                     <button class="button treat-filter-btn" data-category="<?= htmlspecialchars($__cat) ?>"><?= te($__key) ?></button>
