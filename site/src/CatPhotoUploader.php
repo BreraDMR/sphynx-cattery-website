@@ -7,10 +7,14 @@ namespace App;
 use RuntimeException;
 
 /**
- * Resizes an uploaded cat photo and re-encodes it to WebP -- the same
- * pipeline applied by hand to the seed images (see assets/images/*.webp),
- * now run automatically for photos that come in through the Telegram bot.
- * Keeps api/cats.php focused on HTTP concerns rather than GD calls.
+ * Resizes an uploaded photo and re-encodes it to WebP -- the same pipeline
+ * applied by hand to the seed images (see assets/images/*.webp), now run
+ * automatically for photos that come in through the Telegram bot. Keeps the
+ * api/*.php endpoints focused on HTTP concerns rather than GD calls.
+ *
+ * Used for both catalogs: cats (default) and treats, which only differ in
+ * where the files live ($uploadDir) and the public path stored in the DB
+ * ($publicPrefix).
  */
 final class CatPhotoUploader
 {
@@ -18,8 +22,10 @@ final class CatPhotoUploader
     private const MAX_WIDTH = 1000;
     private const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
 
-    public function __construct(private readonly string $uploadDir)
-    {
+    public function __construct(
+        private readonly string $uploadDir,
+        private readonly string $publicPrefix = 'assets/images/cats/',
+    ) {
     }
 
     /**
@@ -78,6 +84,6 @@ final class CatPhotoUploader
 
         imagedestroy($source);
 
-        return 'assets/images/cats/' . $filename;
+        return rtrim($this->publicPrefix, '/') . '/' . $filename;
     }
 }

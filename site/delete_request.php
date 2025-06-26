@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 use App\RequestRepository;
 
-require_once 'config/auth.php';
+require_once __DIR__ . '/config/bootstrap.php';
 require_admin();
-require_once 'config/db.php';
 
 // Deletion must be a POST with a valid CSRF token -- the original version
 // deleted on a plain GET link, which meant any third-party page could

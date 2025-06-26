@@ -5,10 +5,8 @@ declare(strict_types=1);
 use App\RequestRepository;
 use App\RequestStatus;
 
-require_once __DIR__ . '/config/auth.php';
+require_once __DIR__ . '/config/bootstrap.php';
 require_admin();
-require_once __DIR__ . '/config/db.php';
-include __DIR__ . '/includes/header.php';
 
 $repo = new RequestRepository($pdo);
 
@@ -33,24 +31,26 @@ function status_query(?string $status, int $page): string
     }
     return '?' . http_build_query($params);
 }
+
+$page_title = t('requests.admin.title');
+include __DIR__ . '/includes/header.php';
 ?>
 
-<h2 class="section-title">Адмін-панель: заявки з бази даних</h2>
-<p><a href="logout.php">Вийти</a></p>
+<h2 class="section-title"><?= te('requests.admin.title') ?></h2>
+<p><a href="logout.php"><?= te('nav.logout') ?></a></p>
 
 <div class="status-filters">
-    <a href="<?= htmlspecialchars(status_query(null, 1)) ?>" class="button <?= $statusFilter === null ? 'active' : '' ?>">Всі (<?= $repo->count() ?>)</a>
+    <a href="<?= htmlspecialchars(status_query(null, 1)) ?>" class="button <?= $statusFilter === null ? 'active' : '' ?>"><?= te('requests.all') ?> (<?= $repo->count() ?>)</a>
     <?php foreach (RequestStatus::all() as $status): ?>
         <a href="<?= htmlspecialchars(status_query($status, 1)) ?>" class="button <?= $statusFilter === $status ? 'active' : '' ?>">
-            <?= htmlspecialchars(RequestStatus::ukrainianLabel($status)) ?> (<?= $repo->count($status) ?>)
+            <?= htmlspecialchars(request_status_label($status)) ?> (<?= $repo->count($status) ?>)
         </a>
     <?php endforeach; ?>
 </div>
 
 <?php if ($total === 0): ?>
     <div class="card">
-        <p>Поки що немає жодної заявки в таблиці <strong>requests</strong><?= $statusFilter !== null ? ' зі статусом «' . htmlspecialchars(RequestStatus::ukrainianLabel($statusFilter)) . '»' : '' ?>.</p>
-        <p>Підказка для СРС‑6: імпортуй файл <strong>database.sql</strong> у phpMyAdmin, щоб створити таблицю і додати тестові записи.</p>
+        <p><?= te('requests.empty') ?></p>
     </div>
 <?php else: ?>
     <div class="card table-card">
@@ -59,13 +59,13 @@ function status_query(?string $status, int $page): string
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Ім'я</th>
-                    <th>Email</th>
-                    <th>Телефон</th>
-                    <th>Повідомлення</th>
-                    <th>Статус</th>
-                    <th>Дата</th>
-                    <th></th>
+                    <th><?= te('contacts.form.name') ?></th>
+                    <th><?= te('contacts.form.email') ?></th>
+                    <th><?= te('contacts.form.phone') ?></th>
+                    <th><?= te('contacts.form.message') ?></th>
+                    <th><?= te('auth.account.role') ?></th>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -76,9 +76,9 @@ function status_query(?string $status, int $page): string
                         <td><?= htmlspecialchars($r->email) ?></td>
                         <td><?= htmlspecialchars($r->phone ?? '—') ?></td>
                         <td><?= nl2br(htmlspecialchars($r->message)) ?></td>
-                        <td><span class="status-badge status-<?= htmlspecialchars($r->status) ?>"><?= htmlspecialchars(RequestStatus::ukrainianLabel($r->status)) ?></span></td>
+                        <td><span class="status-badge status-<?= htmlspecialchars($r->status) ?>"><?= htmlspecialchars(request_status_label($r->status)) ?></span></td>
                         <td><?= htmlspecialchars($r->createdAt) ?></td>
-                        <td><a href="edit_request.php?id=<?= $r->id ?>" class="button">Редагувати</a></td>
+                        <td><a href="edit_request.php?id=<?= $r->id ?>" class="button">✎</a></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>

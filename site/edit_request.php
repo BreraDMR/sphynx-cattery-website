@@ -6,9 +6,8 @@ use App\RequestRepository;
 use App\RequestStatus;
 use App\RequestValidator;
 
-require_once 'config/auth.php';
+require_once __DIR__ . '/config/bootstrap.php';
 require_admin();
-require_once 'config/db.php';
 
 $repo = new RequestRepository($pdo);
 
@@ -81,7 +80,7 @@ include 'includes/header.php';
     <select name="status">
         <?php foreach (RequestStatus::all() as $status): ?>
             <option value="<?= htmlspecialchars($status) ?>" <?= $status === $request->status ? 'selected' : '' ?>>
-                <?= htmlspecialchars(RequestStatus::ukrainianLabel($status)) ?>
+                <?= htmlspecialchars(request_status_label($status)) ?>
             </option>
         <?php endforeach; ?>
     </select>
