@@ -66,10 +66,10 @@ INSERT INTO cats (slug, name, color, age_months, price_eur, description, photo_p
 -- (oauth_provider + oauth_id). role='admin' replaces the old single hard-coded
 -- admin login: the admin pages and the bot's /requests view are gated by it.
 --
--- Seed admin (email/password login): admin@sphynx.local. The password_hash
--- below is the original coursework demo hash -- the LIVE deploy overwrites it
--- with the rotated hash from site.env (see the WS6 migration), so do not rely
--- on this default beyond a fresh local/CI install.
+-- Seed admin (email/password login): admin@sphynx.local / sphynx-admin-demo
+-- (the hash below is bcrypt of that demo password). The LIVE deploy overwrites
+-- this row with the rotated hash from site.env, so the default password only
+-- applies to a fresh local/CI install -- change it before any real exposure.
 -- ============================================================================
 
 CREATE TABLE IF NOT EXISTS users (
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS users (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT IGNORE INTO users (email, password_hash, name, role) VALUES
-('admin@sphynx.local', '$2b$10$A4kJ953XljZlbSfhyHosWulxQMgSqUnnKzRxb4TtGG3KKI0N69wF6', 'Administrator', 'admin');
+('admin@sphynx.local', '$2y$12$oeCmKb36gKrpWMAy9B30Luz8Wb0MzaU9ni4P/mpBn9TzEeBtq6dhy', 'Administrator', 'admin');
 
 -- ============================================================================
 -- Treats ("вкусняшки") -- second catalog, a sibling of `cats`. Same shape:
