@@ -1,4 +1,4 @@
-> 🌐 **Live demo (auto-updated each restart):** https://connectors-pads-falling-confirmed.trycloudflare.com  <!-- live-url -->
+> 🌐 **Live demo (auto-updated each restart):** https://attempting-bedroom-andale-recording.trycloudflare.com  <!-- live-url -->
 
 <div align="center">
 
