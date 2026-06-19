@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Лисі Котики Прага • Сфінкси під замовлення</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/style.css">
+<script src="assets/js/script.js" defer></script>
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">Доставка по всій Європі за 3–7 днів • Гарантія здоров’я 100%</div>
+
+    <!-- HEADER (виправлений) -->
+    <header class="header">
+        <div class="container">
+            <img src="assets/images/logo.png" alt="Лисі Котики Прага" class="logo">
+            <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Відкрити меню" aria-expanded="false">☰</button>
+            <nav class="nav">
+                <a href="admin_requests.php">Заявки</a>
+                <a href="index.html">Головна</a>
+                <a href="#">Каталог сфінксів</a>
+                <a href="about.html">Про нас</a>
+                <a href="#">Доставка</a>
+                <a href="contacts.html">Контакти</a>
+            </nav>
+            
+            <div class="search-cart">
+                <input type="text" placeholder="Пошук котиків...">
+                <a href="#" class="button">Кошик (0)</a>
+            </div>
+            
+            <div class="phone">+420 777 123 456</div>
+        </div>
+    </header>
+
+<!-- СРС 4 — Фільтрація кошенят (нове інтерактивне рішення + JSON) -->
+<section class="section--white">
+    <div class="container">
+        <h2 class="section-title">Всі кошенята в наявності</h2>
+        
+        <!-- Фільтр -->
+        <div class="text-center mb-30">
+            <input type="text" id="searchInput" class="search-input" placeholder="Пошук за ім'ям або кольором...">
+            
+            <div class="mt-15">
+                <button class="button filter-btn active" data-color="all">Всі</button>
+                <button class="button filter-btn" data-color="чорний">Чорні</button>
+                <button class="button filter-btn" data-color="білий">Білі</button>
+                <button class="button filter-btn" data-color="блакитний">Блакитні</button>
+                <button class="button filter-btn" data-color="інший">Інші кольори</button>
+            </div>
+        </div>
+
+        <!-- Картки кошенят -->
+        <div id="catsContainer" class="cats-container-grid"></div>
+    </div>
+</section>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- HERO -->
+        <section class="hero">
+            <div class="container">
+                <h1>ЛИСІ КОТИКИ ПІД ЗАМОВЛЕННЯ З ПРАГИ</h1>
+                <p>Найкращі породистий сфінкси • Документи • Доставка під ключ</p>
+                <a href="#" class="button">ОТРИМАТИ КОНСУЛЬТАЦІЮ</a>
+            </div>
+        </section>
+
+        <!-- SERVICES -->
+        <section class="services">
+            <div class="container">
+                <h2 class="section-title">ЧОМУ ОБИРАЮТЬ НАС</h2>
+                <div class="benefits">
+                    <div class="service-card card">
+                        <h3>ДОСТУП ДО РОЗПЛІДНИКІВ</h3>
+                        <p>Прямий доступ до найкращих розплідників Чехії</p>
+                    </div>
+                    <div class="service-card card">
+                        <h3>ЕКОНОМІЯ ДО 30%</h3>
+                        <p>Ціни нижчі, ніж у будь-якому зоомагазині</p>
+                    </div>
+                    <div class="service-card card">
+                        <h3>ДОСТАВКА ПІД КЛЮЧ</h3>
+                        <p>Від вибору до адаптації в новому домі</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section>
+            <div class="container">
+                <h2 class="section-title">ПРО НАС</h2>
+                <p class="about-lead">
+                    Ми спеціалізуємося на продажу здорових лисих котиків породи Сфінкс з розплідників Праги. 
+                    Тільки перевірені тварини з документами, щепленнями та ветеринарним паспортом.
+                </p>
+            </div>
+        </section>
+
+        <!-- BENEFITS -->
+        <section class="section--white">
+            <div class="container">
+                <h2 class="section-title">BENEFITS</h2>
+                <div class="benefits">
+                    <div class="benefit-card card">ВЕЛИКИЙ ВИБІР<br><strong>200+ кошенят щотижня</strong></div>
+                    <div class="benefit-card card">ВИГІДНІ ЦІНИ<br><strong>від 1200 €</strong></div>
+                    <div class="benefit-card card">ШВИДКА ДОСТАВКА<br><strong>3–7 днів по Європі</strong></div>
+                </div>
+            </div>
+        </section>
+
+      <!-- FEATURED CATS — GRID (ЛР5) -->
+<section>
+    <div class="container">
+        <h2 class="section-title">FEATURED CATS — Рекомендовані сфінкси</h2>
+        
+        <!-- Замість flex тепер Grid -->
+        <div class="cats-grid">
+
+            <div class="text-center my-30">
+    <button onclick="showGreeting()" class="button delivery-price-btn">
+        🎟️ Показати ціну з доставкою
+    </button>
+</div>
+
+
+
+
+            <article class="cat-card">
+                <img src="assets/images/sphynx-black.jpg" alt="Чорний Сфінкс" class="cat-image">
+                <h3>ЧОРНИЙ СФІНКС МАКС</h3>
+                <p>2024 • 3 місяці • Чиста порода</p>
+                <p class="price price-highlight">1450 €</p>
+                <a href="#" class="button">ДІЗНАТИСЯ БІЛЬШЕ</a>
+            </article>
+            
+            <article class="cat-card">
+                <img src="assets/images/sphynx-white.jpg" alt="Білий Сфінкс" class="cat-image">
+                <h3>БІЛИЙ СФІНКС ЛУНА</h3>
+                <p>2024 • 4 місяці • Рідкісний колір</p>
+                <p class="price price-highlight">1680 €</p>
+                <a href="#" class="button">ДІЗНАТИСЯ БІЛЬШЕ</a>
+            </article>
+            
+            <article class="cat-card">
+                <img src="assets/images/sphynx-blue.jpg" alt="Блакитний Сфінкс" class="cat-image">
+                <h3>БЛАКИТНИЙ СФІНКС ЛЕО</h3>
+                <p>2024 • 2 місяці • Чемпіонська лінія</p>
+                <p class="price price-highlight">1590 €</p>
+                <a href="#" class="button">ДІЗНАТИСЯ БІЛЬШЕ</a>
+            </article>
+        </div>
+    </div>
+</section>
+
+
+        <!-- PROCESS -->
+        <section class="section--light">
+            <div class="container">
+                <h2 class="section-title">ПРОЦЕС ПОКУПКИ ЗА 4 КРОКИ</h2>
+                <div class="steps">
+                    <div class="step">1. Вибір кошеняти</div>
+                    <div class="step">2. Оформлення документів</div>
+                    <div class="step">3. Доставка в Європу</div>
+                    <div class="step">4. Адаптація та підтримка</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TESTIMONIALS -->
+        <section>
+            <div class="container">
+                <h2 class="section-title">Що кажуть наші клієнти</h2>
+                <div class="testimonials-row">
+                    <article class="card testimonial-card">«Макс приїхав здоровим і вже став членом сім’ї! Дякуємо!» — Ольга, Київ</article>
+                    <article class="card testimonial-card">«Швидка доставка, відмінний сервіс. Луна — найкраща покупка!» — Петро, Львів</article>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT SECTION -->
+
+
+<!-- ЛР9 — Відгуки клієнтів з API -->
+<section class="section--light">
+    <div class="container">
+        <h2 class="section-title">Відгуки наших клієнтів (з Fetch API)</h2>
+        <div id="reviewsContainer" class="reviews-grid"></div>
+        
+        <button id="loadReviewsBtn" class="button load-reviews-btn">
+            Завантажити відгуки
+        </button>
+    </div>
+</section>
+
+
+        <section class="contacts-section">
+            <div class="container">
+                <h2 class="section-title">Контакти</h2>
+                <div class="managers-row">
+                    <article class="card">
+                        <img src="assets/images/manager1.jpg" alt="Анна Новак" width="140" height="140" class="manager-avatar">
+                        <h3>Анна Новак</h3>
+                        <p>Менеджер з підбору</p>
+                    </article>
+                    <article class="card">
+                        <img src="assets/images/manager2.jpg" alt="Петр Свобода" width="140" height="140" class="manager-avatar">
+                        <h3>Петр Свобода</h3>
+                        <p>Логістика та доставка</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p>Лисі Котики Прага © 2026 • Чехія</p>
+            <p>+420 777 123 456 • info@sphynx-prague.cz</p>
+            <p>Пн–Сб: 9:00 – 19:00</p>
+        </div>
+    </footer>
+
+</body>
+</html>

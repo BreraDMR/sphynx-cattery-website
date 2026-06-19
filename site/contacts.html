@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Контакти • Лисі Котики Прага</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/style.css">
+<script src="assets/js/script.js" defer></script>
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">Доставка по всій Європі за 3–7 днів • Гарантія здоров’я 100%</div>
+
+    <!-- HEADER -->
+<header class="header">
+    <div class="container">
+        <!-- Логотип -->
+        <img src="assets/images/logo.png" alt="Лисі Котики Прага" class="logo">
+
+        <!-- Меню -->
+        <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Відкрити меню" aria-expanded="false">☰</button>
+        <nav class="nav">
+            <a href="admin_requests.php">Заявки</a>
+            <a href="index.html">Головна</a>
+            <a href="#">Каталог сфінксів</a>
+            <a href="about.html">Про нас</a>
+            <a href="#">Доставка</a>
+            <a href="contacts.html">Контакти</a>
+        </nav>
+
+        <!-- Пошук + Кошик -->
+        <div class="search-cart">
+            <input type="text" placeholder="Пошук котиків..." >
+            <a href="#" class="button">Кошик (0)</a>
+        </div>
+
+        <!-- Телефон -->
+        <div class="phone">+420 777 123 456</div>
+    </div>
+</header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- HERO -->
+        <section class="hero">
+            <div class="container">
+                <h1>Контакти та заявка</h1>
+                <p>Зв'яжіться з нами або залиште заявку — менеджер відповість протягом 1 години</p>
+            </div>
+        </section>
+
+        <!-- ФОРМА -->
+        <section>
+            <div class="container">
+                <h2 class="section-title">Заявка на консультацію та бронювання</h2>
+
+                <form id="contactForm" class="contact-form">
+                    <label>ПІБ <span>*</span></label>
+                    <input type="text" id="name" name="name" required>
+
+                    <label>Email <span>*</span></label>
+                    <input type="email" id="email" name="email" required>
+
+                    <label>Телефон <span>*</span></label>
+                    <input type="tel" id="phone" name="phone" required>
+
+                    <label>Вік кошеняти</label>
+                    <select id="age" name="age">
+                        <option value="">Оберіть</option>
+                        <option value="2-3">2-3 місяці</option>
+                        <option value="4-6">4-6 місяців</option>
+                    </select>
+
+                    <label>Бажаний колір</label>
+                    <input type="text" id="color" name="color">
+
+                    <label>Повідомлення</label>
+                    <textarea id="message" name="message" rows="5"></textarea>
+
+                    <label>
+                        <input type="checkbox" id="agreement" name="agreement" required>
+                        Згоден на обробку персональних даних
+                    </label>
+
+                    <button type="submit" class="button">Надіслати заявку</button>
+                </form>
+
+                <!-- Повідомлення від JS -->
+                <p id="formMessage" class="form-message"></p>
+            </div>
+        </section>
+
+        <!-- МЕНЕДЖЕРИ -->
+        <section class="contacts-section">
+            <div class="container">
+                <h2 class="section-title">Наші менеджери</h2>
+                <div class="managers-row">
+                    <article class="card">
+                        <img src="assets/images/manager1.jpg" alt="Анна Новак" width="140" height="140" class="manager-avatar">
+                        <h3>Анна Новак</h3>
+                        <p>Менеджер з підбору кошенят</p>
+                    </article>
+                    <article class="card">
+                        <img src="assets/images/manager2.jpg" alt="Петр Свобода" width="140" height="140" class="manager-avatar">
+                        <h3>Петр Свобода</h3>
+                        <p>Логістика та доставка</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p>Лисі Котики Прага © 2026 • Чехія</p>
+            <p>+420 777 123 456 • info@sphynx-prague.cz</p>
+            <p>Пн–Сб: 9:00 – 19:00</p>
+        </div>
+    </footer>
+
+</body>
+</html>
