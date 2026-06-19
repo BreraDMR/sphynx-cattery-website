@@ -121,7 +121,7 @@ section {
 /* ==================== HERO ==================== */
 .hero {
     background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
-                url('../../image/hero-sphynx.jpg') center/cover no-repeat;
+                url('../images/hero-sphynx.jpg') center/cover no-repeat;
     color: white;
     text-align: center;
     padding: 120px 20px;
@@ -432,6 +432,18 @@ form {
     border: 1px solid #ccc;
 }
 
+/* filter-btn reuses .button's look; .active marks the selected color --
+   without this there was no visual difference between filters at all. */
+.filter-btn {
+    opacity: 0.6;
+    border: 2px solid transparent;
+}
+
+.filter-btn.active {
+    opacity: 1;
+    border-color: #000;
+}
+
 .cats-container-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -497,9 +509,19 @@ form {
     margin-top: 20px;
 }
 
+/* .delete-link used to be an <a>; it's now a <button> inside a one-button
+   <form> (so deletion can be a real POST -- see docs/report.md Editor's
+   notes), so the default button chrome needs resetting to keep the same
+   plain red inline-link look. */
 .delete-link {
     color: red;
     margin-left: 10px;
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .error-text {

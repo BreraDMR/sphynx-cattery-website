@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Лисі Котики Прага</title>
+    <link rel="icon" href="assets/images/favicon.ico">
     <link rel="stylesheet" href="assets/css/style.css">
     <script src="assets/js/script.js" defer></script>
 </head>
@@ -19,7 +20,7 @@
         <nav class="nav">
             <a href="admin_requests.php">Заявки</a>
             <a href="index.html">Головна</a>
-            <a href="#">Каталог</a>
+            <a href="index.html#catalog">Каталог</a>
             <a href="about.html">Про нас</a>
             <a href="#">Доставка</a>
             <a href="contacts.html">Контакти</a>
