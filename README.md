@@ -21,6 +21,14 @@ six pages, config comes from `.env` instead of being hardcoded, every form
 that changes data is CSRF-protected (not just delete), and there's a real
 PHPUnit test suite for the actual PHP code (not just a Python stand-in).
 
+## Screenshots
+
+| Homepage catalog (live filter/search) | Admin panel (status filters + pagination) |
+|---|---|
+| ![Homepage](docs/screenshots/homepage.png) | ![Admin panel](docs/screenshots/admin.png) |
+
+[Contact/booking form →](docs/screenshots/contacts.png)
+
 ## Repository layout
 
 | Path | Contents |
