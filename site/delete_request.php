@@ -1,4 +1,9 @@
 <?php
+
+declare(strict_types=1);
+
+use App\RequestRepository;
+
 require_once 'config/auth.php';
 require_admin();
 require_once 'config/db.php';
@@ -11,12 +16,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !csrf_verify($_POST['csrf_token'] ?
     die('Невірний запит.');
 }
 
-$id = $_POST['id'] ?? null;
+$id = isset($_POST['id']) ? (int) $_POST['id'] : null;
 
 if ($id) {
-    $stmt = $pdo->prepare("DELETE FROM requests WHERE id = ?");
-    $stmt->execute([$id]);
+    (new RequestRepository($pdo))->delete($id);
 }
 
-header("Location: requests.php");
+header('Location: requests.php');
 exit;

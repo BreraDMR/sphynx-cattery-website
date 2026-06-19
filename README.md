@@ -9,36 +9,56 @@ specialty 123 Computer Engineering.
 
 This is a learning project, not a real business or a real website anyone
 can book a cat through — see [`docs/report.md`](docs/report.md) for what
-each part of the course it was built for, and for a full list of the bugs
-found during review and fixed for this version (broken admin
+each part of the course it was built for, and for the full editor's-notes
+list of everything found and fixed during two review passes: broken admin
 authentication, a CSRF-able delete, a reflected XSS, two disconnected data
-pipelines, and more).
+pipelines, a broken CSS asset path, and more.
+
+Past the bug-fixing pass, the backend was also restructured to look like
+something closer to a junior/mid-level PHP project rather than coursework
+PHP: SQL lives in one repository class instead of being copy-pasted across
+six pages, config comes from `.env` instead of being hardcoded, every form
+that changes data is CSRF-protected (not just delete), and there's a real
+PHPUnit test suite for the actual PHP code (not just a Python stand-in).
 
 ## Repository layout
 
 | Path | Contents |
 |---|---|
-| [`site/`](site/) | The website: public pages, the contact-form API, and the admin CRUD panel (PHP + MySQL via PDO). |
-| [`docs/report.md`](docs/report.md) | What the project covers, how to run it, and the full editor's-notes list of bugs found and fixed. |
-| [`tools/validate_request.py`](tools/validate_request.py) | A Python mirror of the PHP-side form validation rules, with unit tests. |
+| [`site/`](site/) | The website: public pages, the contact-form API, and the admin CRUD panel (PHP + MySQL via PDO). See `site/src/` for the repository/validator/status classes and `site/tests/` for the PHPUnit suite. |
+| [`docs/report.md`](docs/report.md) | What the project covers, how to run it, and the full editor's-notes list of everything found and fixed. |
+| [`tools/validate_request.py`](tools/validate_request.py) | A Python mirror of the PHP-side form validation rules, with unit tests — predates the real PHPUnit suite in `site/tests/`, kept since it doesn't need PHP installed to run. |
 
 ## What's verified vs. what isn't
 
-- `python3 -m unittest discover -s tests` in `tools/` — **7/7 unit tests
-  pass**, covering the contact-form validation rules (name length, email
-  format, message length, consent).
+- `site/vendor/bin/phpunit` (after `composer install` in `site/`) —
+  **23/23 tests pass**, covering `RequestRepository` (CRUD, status
+  filtering, pagination) against an in-memory SQLite database, and
+  `RequestValidator`/`RequestStatus`.
+- `python3 -m unittest discover -s tests` in `tools/` — **7/7 tests pass**,
+  the older Python-side mirror of the validation rules.
 - The PHP/MySQL site was run end-to-end against a real local PHP built-in
-  server + MySQL during this review (import `database.sql`, `php -S`,
-  exercised every route with `curl`): admin pages correctly redirect to
-  `login.php` when logged out and show the seeded data once logged in,
-  wrong credentials are rejected, deleting without a valid CSRF token
-  returns 403, a submission through the public contact form lands in the
-  same `requests` table the admin panel reads (confirmed it shows up
-  there), a crafted `id` containing a script tag on `edit_request.php` is
-  neutralized instead of reflected, and the static pages, catalog/reviews
-  JSON, and images all load. That test database and server were torn down
-  afterwards -- nothing from that run is in this repo. See
-  `docs/report.md` for how to run it yourself.
+  server + MySQL, twice (once after the initial bug-fix pass, again after
+  the architecture rework below) -- import `database.sql`, `php -S`,
+  exercise every route with `curl`. The second pass caught a real bug the
+  SQLite-backed unit tests couldn't: MySQL's PDO driver rejects `LIMIT`/
+  `OFFSET` bound as plain (string) parameters, which SQLite tolerates --
+  see `docs/report.md` Editor's notes. Both test databases and servers
+  were torn down afterwards; nothing from those runs is in this repo.
+
+## Running it locally
+
+```sh
+cd site
+composer install
+cp .env.example .env          # defaults match a local MAMP/XAMPP MySQL install
+# import database.sql into the database named in .env, then:
+php -S localhost:8000
+vendor/bin/phpunit            # 23/23, no database needed for this part
+```
+
+Default demo admin login at `/login.php`: `admin` / `sphynx-admin-2026`
+(see `.env.example`).
 
 ## License
 

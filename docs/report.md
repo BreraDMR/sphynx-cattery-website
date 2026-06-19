@@ -24,21 +24,27 @@ small admin CRUD panel backed by MySQL via PDO.
 - **СРС6** — a MySQL `requests` table with full CRUD (create/read/update/
   delete) through an admin-style page set, accessed via PDO.
 
-## This repo's contribution: a working PHP/MySQL review
+## This repo's contribution: a working PHP/MySQL review, then a rework
 
-Damir asked for an honest code review of this project plus whatever fixes
-were needed to make it presentable, with the explicit framing that it's a
-learning project, not a real production site. The review surfaced ten
-issues, two of them serious enough that the original would not be safe to
-deploy or demo publicly as-is. All ten are fixed in this version — see
-"Editor's notes" below for the full list and what changed.
+This went through two rounds. First, Damir asked for an honest code review
+of this project plus whatever fixes were needed to make it presentable,
+with the explicit framing that it's a learning project, not a real
+production site. That review surfaced ten issues, two of them serious
+enough that the original would not be safe to deploy or demo publicly
+as-is (see Editor's notes #1–10), followed by five more found in a
+pre-publish pass (#11–15).
+
+Second, Damir asked to go further: take the (by then bug-free) coursework
+PHP and restructure it to look more like junior/mid-level work rather than
+coursework PHP specifically. That's Editor's notes #16 onward, and is
+summarized in "Architecture" below.
 
 ## Repository layout
 
 | Path | Contents |
 |---|---|
 | [`site/`](site/) | The website itself — see below. |
-| [`tools/validate_request.py`](tools/validate_request.py) | A Python mirror of the contact-form validation rules in `site/api.php`, with unit tests (this repo's environment doesn't have PHP installed, so this is how the validation logic gets an automated check). |
+| [`tools/validate_request.py`](tools/validate_request.py) | A Python mirror of the contact-form validation rules, with unit tests. Predates `site/tests/`; kept since it runs without PHP installed. |
 
 ### Inside `site/`
 
@@ -46,30 +52,81 @@ deploy or demo publicly as-is. All ten are fixed in this version — see
 |---|---|
 | `index.html`, `about.html`, `contacts.html` | Public pages. |
 | `api.php` | Public contact-form endpoint (СРС4/5/6). |
-| `login.php` / `logout.php` | Admin session login — new, see Editor's notes #1. |
-| `admin_requests.php`, `requests.php`, `create_request.php`, `edit_request.php`, `delete_request.php` | Admin CRUD over the `requests` table (СРС6) — now behind the login above. |
-| `config/db.php` | PDO connection (default local MAMP-style credentials — not a secret, this is meant to be run locally). |
-| `config/auth.php`, `config/admin_credentials.php` | Session/CSRF helpers and the demo admin login. |
+| `login.php` / `logout.php` | Admin session login — see Editor's notes #1. |
+| `admin_requests.php` | Read-oriented admin dashboard: status filter pills + pagination over the `requests` table. |
+| `requests.php`, `create_request.php`, `edit_request.php`, `delete_request.php` | The create/update/delete side of admin CRUD (СРС6) — `edit_request.php` also changes a request's status. |
+| `src/RequestRepository.php` | All SQL for the `requests` table, in one place — see "Architecture". |
+| `src/RequestRecord.php` | Immutable read model for one row. |
+| `src/RequestValidator.php` | The one validation ruleset, shared by `api.php`/`create_request.php`/`edit_request.php`. |
+| `src/RequestStatus.php` | The `new`/`in_progress`/`closed` status codes and their Ukrainian labels. |
+| `tests/` | PHPUnit tests for the four classes above. |
+| `config/db.php` | PDO connection, reading from `.env`. |
+| `config/env.php` | The `.env` loader (`load_env()`/`env()`). |
+| `config/auth.php`, `config/admin_credentials.php` | Session/CSRF helpers and the demo admin login (credentials from `.env`). |
+| `.env.example` | Template for `.env` (gitignored) — copy it to get started. |
+| `composer.json`, `phpunit.xml` | Autoloading (`App\` → `src/`, `Tests\` → `tests/`) and the PHPUnit suite config. |
 | `database.sql` | Schema + seed data, import this first. |
 | `demo-queries.sql` | Example SELECT/UPDATE/DELETE queries for СРС6 (kept separate from the schema file — see Editor's notes #8). |
 | `assets/data/cats.json`, `assets/data/reviews.json` | Static data behind the catalog filter (СРС4) and the reviews loader (ЛР9). |
 
+## Architecture
+
+The original (and the first review pass) had every page running its own
+inline `$pdo->prepare(...)` calls, each page re-implementing slightly
+different validation rules, and database credentials hardcoded in
+`config/db.php`. The rework:
+
+- **One repository class.** `RequestRepository` is the only place that
+  knows the `requests` table's SQL. Every page (`admin_requests.php`,
+  `requests.php`, `create_request.php`, `edit_request.php`,
+  `delete_request.php`, `api.php`) goes through it instead of running its
+  own queries. It returns `RequestRecord` value objects (typed, readonly
+  properties) rather than raw associative arrays.
+- **One validator.** `RequestValidator::validate()` replaced three
+  near-duplicate copies of the same rules that had quietly drifted apart
+  (e.g. `create_request.php` required a 10-character message,
+  `edit_request.php` didn't check message length at all).
+- **Config from the environment.** `config/db.php` and
+  `config/admin_credentials.php` read from `.env` (via a deliberately tiny
+  hand-rolled loader, `config/env.php` — the format needed here didn't
+  justify a Composer dependency) instead of having credentials baked into
+  the PHP source. `.env.example` ships in the repo; `.env` itself is
+  gitignored.
+- **CSRF on every state-changing form**, not just delete: `create_request.php`
+  and `edit_request.php` now check the same per-session token
+  `delete_request.php` already did.
+- **A status workflow.** Requests now have a `status`
+  (`new`/`in_progress`/`closed`, stored in English, labeled in Ukrainian
+  for display — `RequestStatus`). `admin_requests.php` filters by status
+  and paginates (10 per page); `edit_request.php` is where status gets
+  changed.
+- **A real PHPUnit suite.** `site/tests/` tests the actual PHP that ships
+  (`RequestRepository`, `RequestRecord`, `RequestValidator`,
+  `RequestStatus`) against an in-memory SQLite database, so the tests
+  don't need a MySQL server. `tools/validate_request.py`'s Python mirror
+  predates this and is kept for environments without PHP.
+
 ## Running it locally
 
-This needs a local PHP + MySQL stack (e.g. MAMP/XAMPP/`php -S` with a MySQL
-server). With one running:
+This needs a local PHP (8.1+) + MySQL stack (e.g. MAMP/XAMPP, or just
+`php -S` for the app server) and Composer.
 
-1. Import `site/database.sql` into MySQL (creates and seeds the `requests`
-   table).
-2. Point `site/config/db.php` at your database name if it isn't
-   `sphynx_prague`.
-3. Serve the `site/` folder (e.g. `php -S localhost:8000` from inside it).
-4. Visit `/login.php` to reach the admin panel — default demo credentials
-   are `admin` / `sphynx-admin-2026` (see `config/admin_credentials.php`;
-   change both before using this anywhere beyond a local demo).
+```sh
+cd site
+composer install
+cp .env.example .env      # adjust if your local DB setup differs
+```
 
-`python3 -m unittest discover -s tests` inside `tools/` runs the validation
-unit tests — **7/7 pass**, no PHP or database needed for that part.
+1. Import `site/database.sql` into the database named in `.env` (default
+   `sphynx_prague`).
+2. Serve the `site/` folder, e.g. `php -S localhost:8000` from inside it.
+3. Visit `/login.php` to reach the admin panel — default demo credentials
+   are `admin` / `sphynx-admin-2026` (see `.env.example`; change both
+   before using this anywhere beyond a local demo).
+
+`vendor/bin/phpunit` inside `site/` runs the PHP test suite — **23/23
+pass**, no database needed. `python3 -m unittest discover -s tests` inside
+`tools/` runs the older Python-side validation tests — **7/7 pass**.
 
 ## Editor's notes — what was found and fixed
 
@@ -171,7 +228,52 @@ unit tests — **7/7 pass**, no PHP or database needed for that part.
     individual cat detail pages were never part of this course's scope, so
     building them out would be scope creep rather than a fix.
 
-None of this changes what the project actually demonstrates academically
+### Architecture rework (after Damir asked to push this toward junior/mid-level quality)
+
+16. **SQL was inline in six different files.** Each of `admin_requests.php`,
+    `requests.php`, `create_request.php`, `edit_request.php`,
+    `delete_request.php`, and `api.php` ran its own `$pdo->prepare(...)`
+    calls against the `requests` table. Extracted into `RequestRepository`
+    (`site/src/`), with `RequestRecord` as a typed read model instead of
+    raw associative arrays.
+17. **Validation rules had drifted apart across three copies.**
+    `create_request.php` required a 10-character message; `api.php`
+    required one only if non-empty; `edit_request.php` didn't check
+    message length at all. All three now call the same
+    `RequestValidator::validate()`.
+18. **Database and admin credentials were hardcoded in PHP source.**
+    `config/db.php` had `root`/`root`/`sphynx_prague` written directly in
+    the file; `config/admin_credentials.php` had the demo username and
+    password hash the same way. Both now read from `.env` (via a small
+    hand-rolled loader -- the format didn't justify a Composer dependency
+    like vlucas/phpdotenv), with `.env.example` committed and `.env`
+    gitignored.
+19. **Only `delete_request.php` had CSRF protection.**
+    `create_request.php` and `edit_request.php` POST just as much as
+    delete does (creating/editing a customer record), but had no token
+    check. Both now verify the same per-session CSRF token delete already
+    used.
+20. **No workflow once a request existed.** Every request just sat there
+    with no way to mark it handled. Added a `status` column
+    (`new`/`in_progress`/`closed`), a filter+pagination UI on
+    `admin_requests.php`, and a status field on the edit form.
+21. **MySQL rejected the new pagination query -- caught only by testing
+    against real MySQL, not the SQLite-backed unit tests.**
+    `RequestRepository::all()`'s `LIMIT ? OFFSET ?` failed against MySQL
+    with a syntax error (`near ''10' OFFSET '0''`): binding plain PHP
+    values for those two placeholders makes PDO treat them as quoted
+    strings, which MySQL's grammar doesn't accept for `LIMIT`/`OFFSET`
+    (SQLite is lenient about this and coerces the strings to integers
+    silently, which is exactly why the 23 PHPUnit tests -- which run
+    against in-memory SQLite, not MySQL -- didn't catch it). Fixed with an
+    explicit `PDO::PARAM_INT` bind on those two parameters. This is the
+    reason the live curl-based re-test against real MySQL happened a
+    second time, after the architecture changes, instead of trusting the
+    unit tests alone.
+
+23 PHPUnit tests, 7 Python tests, and a live MySQL run all pass as of this
+rework. None of this changes what the project actually demonstrates
+academically
 (СРС4–6, ЛР7–10 are all still here, doing what they were meant to do) --
 it just makes the demonstration work end-to-end and removes the parts that
 would be embarrassing or unsafe to show someone.

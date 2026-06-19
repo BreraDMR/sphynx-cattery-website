@@ -18,10 +18,11 @@ CREATE TABLE IF NOT EXISTS requests (
     color VARCHAR(50) NULL,
     message TEXT NOT NULL,
     consent TINYINT(1) NOT NULL DEFAULT 0,
+    status VARCHAR(20) NOT NULL DEFAULT 'new',
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO requests (name, email, phone, age, color, message, consent, created_at) VALUES
-('Анна Новак', 'anna.novak@example.com', '+420777111222', '2-3', 'білий', 'Хочу консультацію щодо сфінкса, цікавить доставка до Праги.', 1, '2026-04-01 10:15:00'),
-('Петро Свобода', 'peter.svoboda@example.com', '+420777333444', '4-6', 'чорний', 'Підкажіть, чи є кошенята 2–3 місяці? Хочу забронювати.', 1, '2026-04-05 18:40:00'),
-('Ольга Коваль', 'olha.koval@example.com', NULL, NULL, 'білий', 'Цікавить білий сфінкс, прошу зв’язатися зі мною на email.', 1, '2026-04-10 09:05:00');
+INSERT INTO requests (name, email, phone, age, color, message, consent, status, created_at) VALUES
+('Анна Новак', 'anna.novak@example.com', '+420777111222', '2-3', 'білий', 'Хочу консультацію щодо сфінкса, цікавить доставка до Праги.', 1, 'new', '2026-04-01 10:15:00'),
+('Петро Свобода', 'peter.svoboda@example.com', '+420777333444', '4-6', 'чорний', 'Підкажіть, чи є кошенята 2–3 місяці? Хочу забронювати.', 1, 'in_progress', '2026-04-05 18:40:00'),
+('Ольга Коваль', 'olha.koval@example.com', NULL, NULL, 'білий', 'Цікавить білий сфінкс, прошу зв’язатися зі мною на email.', 1, 'closed', '2026-04-10 09:05:00');
