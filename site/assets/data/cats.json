@@ -1,8 +1,0 @@
-[
-  { "name": "Чорний Сфінкс Макс", "color": "чорний", "age": "3 місяці", "price": 1450, "image": "assets/images/sphynx-black.jpg" },
-  { "name": "Чорний Сфінкс Том", "color": "чорний", "age": "5 місяців", "price": 1390, "image": "assets/images/sphynx-black.jpg" },
-  { "name": "Білий Сфінкс Луна", "color": "білий", "age": "4 місяці", "price": 1680, "image": "assets/images/sphynx-white.jpg" },
-  { "name": "Білий Сфінкс Белла", "color": "білий", "age": "2 місяці", "price": 1590, "image": "assets/images/sphynx-white.jpg" },
-  { "name": "Блакитний Сфінкс Лео", "color": "блакитний", "age": "2 місяці", "price": 1590, "image": "assets/images/sphynx-blue.jpg" },
-  { "name": "Кремовий Сфінкс Сіммі", "color": "інший", "age": "6 місяців", "price": 1420, "image": "assets/images/sphynx-white.jpg" }
-]

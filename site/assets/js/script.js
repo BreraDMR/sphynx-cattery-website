@@ -102,9 +102,9 @@ window.addEventListener('load', () => {
     }
 
     // ==================== СРС 4 — Фільтрація кошенят ====================
-    // Раніше тут був лише цей коментар-заглушка -- кнопки фільтра й пошук
-    // в index.html нічого не робили. Тепер дані тягнуться з
-    // assets/data/cats.json і рендеряться/фільтруються нижче.
+    // Раніше кошенята жили лише в статичному assets/data/cats.json, без
+    // CRUD і без БД. Тепер єдине джерело даних -- api/cats.php (таблиця
+    // cats), куди нові картки потрапляють і через Telegram-бота.
     const catsContainer = document.getElementById('catsContainer');
     if (catsContainer) {
         let allCats = [];
@@ -117,11 +117,11 @@ window.addEventListener('load', () => {
             }
             catsContainer.innerHTML = cats.map(cat => `
                 <article class="cat-card">
-                    <img src="${cat.image}" alt="${cat.name}" class="cat-image">
+                    <img src="${cat.photo}" alt="${cat.name}" class="cat-image">
                     <h3>${cat.name.toUpperCase()}</h3>
-                    <p>${cat.age} • Чиста порода</p>
-                    <p class="price price-highlight">${cat.price} €</p>
-                    <a href="#" class="button">ДІЗНАТИСЯ БІЛЬШЕ</a>
+                    <p>${cat.age_label} • Чиста порода</p>
+                    <p class="price price-highlight">${cat.price_eur} €</p>
+                    <a href="cat.php?slug=${encodeURIComponent(cat.slug)}" class="button">ДІЗНАТИСЯ БІЛЬШЕ</a>
                 </article>
             `).join('');
         }
@@ -138,14 +138,14 @@ window.addEventListener('load', () => {
             renderCats(filtered);
         }
 
-        fetch('assets/data/cats.json')
+        fetch('api/cats.php')
             .then(res => res.json())
-            .then(cats => {
-                allCats = cats;
+            .then(data => {
+                allCats = data.cats || [];
                 renderCats(allCats);
             })
             .catch(err => {
-                console.error('Не вдалося завантажити cats.json:', err);
+                console.error('Не вдалося завантажити api/cats.php:', err);
                 catsContainer.innerHTML = '<p>Не вдалося завантажити список кошенят.</p>';
             });
 
@@ -162,6 +162,18 @@ window.addEventListener('load', () => {
                 applyFilters();
             });
         });
+    }
+
+    // ==================== Підстановка кошеняти у форму заявки ====================
+    // cat.php?... "Зв'язатися щодо цього кошеня" веде на
+    // contacts.html?cat=ІМ'Я -- якщо параметр є, одразу підставляємо його
+    // в повідомлення, щоб менеджер бачив, про яке кошеня йдеться.
+    const messageField = document.getElementById('message');
+    if (messageField) {
+        const catName = new URLSearchParams(window.location.search).get('cat');
+        if (catName && !messageField.value) {
+            messageField.value = `Цікавить кошеня "${catName}". `;
+        }
     }
 
     // ==================== ЛР9 — Відгуки клієнтів (Fetch API) ====================
