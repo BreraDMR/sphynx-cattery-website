@@ -1,4 +1,4 @@
-> 🌐 **Live demo (auto-updated each restart):** https://ideal-driving-asp-city.trycloudflare.com  <!-- live-url -->
+> 🌐 **Live demo (auto-updated each restart):** https://screenshots-direction-tone-judy.trycloudflare.com  <!-- live-url -->
 
 # Sphynx Cattery Website — PHP/MySQL Coursework Project
 
