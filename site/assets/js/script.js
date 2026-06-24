@@ -4,8 +4,13 @@
 
 console.log('%c🚀 Скрипт завантажено успішно', 'color:#ff9800; font-size:16px;');
 
-// Для кнопки з inline onclick в index.html (щоб не було помилки в консолі)
-window.showGreeting = function() {
+// ЛР7 — персоналізоване вітання в .hero, відтворюється один раз на завантаженні
+// (раніше ця ж логіка була продубльована і в window.showGreeting, і тут --
+// onclick на кнопці викликав showGreeting(), яка щоразу рахувала ТЕ САМЕ, що
+// вже встигло відмалюватись на load, тому клік виглядав "неактивним": видимих
+// змін не було. showGreeting більше нічого не викликає -- кнопка тепер працює
+// через showDeliveryPrice(), див. нижче.
+function renderHeroGreeting() {
     const heroP = document.querySelector('.hero p');
     if (!heroP) return;
     const hour = new Date().getHours();
@@ -13,23 +18,29 @@ window.showGreeting = function() {
     if (hour < 12) greeting = "🌞 Доброго ранку! Шукаєте лисого друга?";
     else if (hour < 18) greeting = "☀️ Доброго дня! Найкращі сфінкси чекають на вас";
     else greeting = "🌙 Доброго вечора! Кошенята готові до переїзду";
-
     heroP.innerHTML = greeting + '<br><strong>Ціна кошеняти з доставкою від 1350 €</strong>';
+}
+
+// ==================== Калькулятор доставки (кнопка "Показати ціну з доставкою") ====================
+// Базова ціна -- орієнтовна (для прикладу), бере найдешевшого кошеня з
+// каталогу на момент кліку, якщо каталог уже завантажений.
+window.showDeliveryPrice = function() {
+    const select = document.getElementById('deliveryRegion');
+    const resultEl = document.getElementById('deliveryPriceResult');
+    if (!select || !resultEl) return;
+
+    const basePrice = window.__cheapestCatPrice || 1350;
+    const fee = parseInt(select.value, 10) || 0;
+    const regionLabel = select.options[select.selectedIndex].text;
+
+    resultEl.textContent = `Орієнтовно для "${regionLabel}": ${basePrice} € (кошеня) + ${fee} € (доставка) = ${basePrice + fee} €`;
 };
 
 // Все виконуємо ТІЛЬКИ після повного завантаження сторінки
 window.addEventListener('load', () => {
 
     // ==================== ЛР7 — Привітання ====================
-    const heroP = document.querySelector('.hero p');
-    if (heroP) {
-        let greeting = "";
-        const hour = new Date().getHours();
-        if (hour < 12) greeting = "🌞 Доброго ранку! Шукаєте лисого друга?";
-        else if (hour < 18) greeting = "☀️ Доброго дня! Найкращі сфінкси чекають на вас";
-        else greeting = "🌙 Доброго вечора! Кошенята готові до переїзду";
-        heroP.innerHTML = greeting + '<br><strong>Ціна кошеняти з доставкою від 1350 €</strong>';
-    }
+    renderHeroGreeting();
 
     // ==================== ЛР8 — Мобільне меню ====================
     const mobileBtn = document.getElementById('mobileMenuBtn');
@@ -143,6 +154,9 @@ window.addEventListener('load', () => {
             .then(data => {
                 allCats = data.cats || [];
                 renderCats(allCats);
+                if (allCats.length > 0) {
+                    window.__cheapestCatPrice = Math.min(...allCats.map(c => c.price_eur));
+                }
             })
             .catch(err => {
                 console.error('Не вдалося завантажити api/cats.php:', err);
