@@ -16,23 +16,18 @@
     <!-- HEADER (виправлений) -->
     <header class="header">
         <div class="container">
-            <img src="assets/images/logo.png" alt="Лисі Котики Прага" class="logo">
+            <img src="assets/images/logo.svg" alt="Лисі Котики Прага" class="logo">
             <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Відкрити меню" aria-expanded="false">☰</button>
             <nav class="nav">
                 <a href="admin_requests.php">Заявки</a>
                 <a href="index.html">Головна</a>
                 <a href="index.html#catalog">Каталог сфінксів</a>
                 <a href="about.html">Про нас</a>
-                <a href="#">Доставка</a>
+                <a href="delivery.html">Доставка</a>
                 <a href="contacts.html">Контакти</a>
             </nav>
-            
-            <div class="search-cart">
-                <input type="text" placeholder="Пошук котиків...">
-                <a href="#" class="button">Кошик (0)</a>
-            </div>
-            
-            <div class="phone">+420 777 123 456</div>
+
+            <div class="phone">+420 123 456 789</div>
         </div>
     </header>
 
@@ -114,47 +109,16 @@
             </div>
         </section>
 
-      <!-- FEATURED CATS — GRID (ЛР5) -->
-<section>
+      <!-- ЛР7 easter egg: персоналізоване вітання вже показується в .hero,
+           кнопка нижче лишається як другий вхід до того самого пасхалки.
+           Раніше тут ще дублювалися ті самі 3 кошенята, що вже показані
+           вище в #catalog (з cats.json) -- прибрано, єдине джерело даних
+           тепер api/cats.php. -->
+<section class="text-center my-30">
     <div class="container">
-        <h2 class="section-title">FEATURED CATS — Рекомендовані сфінкси</h2>
-        
-        <!-- Замість flex тепер Grid -->
-        <div class="cats-grid">
-
-            <div class="text-center my-30">
-    <button onclick="showGreeting()" class="button delivery-price-btn">
-        🎟️ Показати ціну з доставкою
-    </button>
-</div>
-
-
-
-
-            <article class="cat-card">
-                <img src="assets/images/sphynx-black.jpg" alt="Чорний Сфінкс" class="cat-image">
-                <h3>ЧОРНИЙ СФІНКС МАКС</h3>
-                <p>2024 • 3 місяці • Чиста порода</p>
-                <p class="price price-highlight">1450 €</p>
-                <a href="#" class="button">ДІЗНАТИСЯ БІЛЬШЕ</a>
-            </article>
-            
-            <article class="cat-card">
-                <img src="assets/images/sphynx-white.jpg" alt="Білий Сфінкс" class="cat-image">
-                <h3>БІЛИЙ СФІНКС ЛУНА</h3>
-                <p>2024 • 4 місяці • Рідкісний колір</p>
-                <p class="price price-highlight">1680 €</p>
-                <a href="#" class="button">ДІЗНАТИСЯ БІЛЬШЕ</a>
-            </article>
-            
-            <article class="cat-card">
-                <img src="assets/images/sphynx-blue.jpg" alt="Блакитний Сфінкс" class="cat-image">
-                <h3>БЛАКИТНИЙ СФІНКС ЛЕО</h3>
-                <p>2024 • 2 місяці • Чемпіонська лінія</p>
-                <p class="price price-highlight">1590 €</p>
-                <a href="#" class="button">ДІЗНАТИСЯ БІЛЬШЕ</a>
-            </article>
-        </div>
+        <button onclick="showGreeting()" class="button delivery-price-btn">
+            🎟️ Показати ціну з доставкою
+        </button>
     </div>
 </section>
 
@@ -204,12 +168,12 @@
                 <h2 class="section-title">Контакти</h2>
                 <div class="managers-row">
                     <article class="card">
-                        <img src="assets/images/manager1.jpg" alt="Анна Новак" width="140" height="140" class="manager-avatar">
+                        <img src="assets/images/manager1.webp" alt="Анна Новак" width="140" height="140" class="manager-avatar">
                         <h3>Анна Новак</h3>
                         <p>Менеджер з підбору</p>
                     </article>
                     <article class="card">
-                        <img src="assets/images/manager2.jpg" alt="Петр Свобода" width="140" height="140" class="manager-avatar">
+                        <img src="assets/images/manager2.webp" alt="Петр Свобода" width="140" height="140" class="manager-avatar">
                         <h3>Петр Свобода</h3>
                         <p>Логістика та доставка</p>
                     </article>
@@ -222,7 +186,7 @@
     <footer>
         <div class="container">
             <p>Лисі Котики Прага © 2026 • Чехія</p>
-            <p>+420 777 123 456 • info@sphynx-prague.cz</p>
+            <p>+420 123 456 789 • info@example.com</p>
             <p>Пн–Сб: 9:00 – 19:00</p>
         </div>
     </footer>
