@@ -333,3 +333,15 @@ came back into play -- this pass's notes pick up at #22.
 38 PHPUnit tests now pass (23 → 38: `CatRepository`/`CatValidator` added
 alongside the existing `Request*` suite), against the same in-memory SQLite
 setup as before.
+
+28. **Saving an edited or newly created request threw a "headers already
+    sent" warning instead of redirecting.** `create_request.php` and
+    `edit_request.php` both ran `include 'includes/header.php'` (which
+    prints HTML) *before* their POST-handling block, but a successful
+    save in that block calls `header('Location: requests.php')` --
+    impossible once header.php has already flushed output. The redirect
+    silently failed and PHP logged the warning instead. Fixed by moving
+    `include 'includes/header.php'` to after the POST block in both
+    files, so the include only runs when the page is actually about to
+    render the form (GET request, or POST with validation errors) rather
+    than always running first.
