@@ -13,6 +13,7 @@ declare(strict_types=1);
  * original СРС4 "save to file" exercise). See docs/report.md Editor's notes.
  */
 
+use App\BotNotifier;
 use App\RequestRepository;
 use App\RequestValidator;
 
@@ -39,7 +40,14 @@ $errors = RequestValidator::validate($nameRaw, $emailRaw, $msgRaw, $consent);
 
 if (empty($errors)) {
     $repo = new RequestRepository($pdo);
-    $repo->create($nameRaw, $emailRaw, $phoneRaw ?: null, $ageRaw ?: null, $colorRaw ?: null, $msgRaw, $consent);
+    $newId = $repo->create($nameRaw, $emailRaw, $phoneRaw ?: null, $ageRaw ?: null, $colorRaw ?: null, $msgRaw, $consent);
+
+    // Push to sphynx-cats-crm-bot so the owner/admins see it in Telegram,
+    // not just in admin_requests.php. Best-effort -- see BotNotifier.
+    $newRequest = $repo->find($newId);
+    if ($newRequest !== null) {
+        BotNotifier::notifyNewRequest($newRequest);
+    }
 
     // Збереження в файл (Завдання 4, СРС4) -- escape тільки тут, для логу,
     // а не для збереження/валідації.

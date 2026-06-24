@@ -109,16 +109,23 @@
             </div>
         </section>
 
-      <!-- ЛР7 easter egg: персоналізоване вітання вже показується в .hero,
-           кнопка нижче лишається як другий вхід до того самого пасхалки.
-           Раніше тут ще дублювалися ті самі 3 кошенята, що вже показані
-           вище в #catalog (з cats.json) -- прибрано, єдине джерело даних
-           тепер api/cats.php. -->
+      <!-- Калькулятор доставки. Раніше тут була кнопка, що викликала
+           showGreeting() -- ту саму функцію, що вже відпрацьовувала на
+           завантаженні сторінки, тож клік не давав видимого результату.
+           Тепер кнопка рахує щось своє: ціну кошеняти (найдешевшого з
+           каталогу) + вартість доставки в обраний регіон. -->
 <section class="text-center my-30">
     <div class="container">
-        <button onclick="showGreeting()" class="button delivery-price-btn">
+        <h3 class="section-title" style="margin-bottom:15px;">Розрахувати ціну з доставкою</h3>
+        <select id="deliveryRegion" class="search-input">
+            <option value="0">Чехія (особиста передача)</option>
+            <option value="80">Словаччина, Польща, Австрія</option>
+            <option value="150">Решта Європи</option>
+        </select>
+        <button onclick="showDeliveryPrice()" class="button delivery-price-btn">
             🎟️ Показати ціну з доставкою
         </button>
+        <p id="deliveryPriceResult" class="price-highlight mt-15"></p>
     </div>
 </section>
 
@@ -153,7 +160,7 @@
 <!-- ЛР9 — Відгуки клієнтів з API -->
 <section class="section--light">
     <div class="container">
-        <h2 class="section-title">Відгуки наших клієнтів (з Fetch API)</h2>
+        <h2 class="section-title">Відгуки наших клієнтів</h2>
         <div id="reviewsContainer" class="reviews-grid"></div>
         
         <button id="loadReviewsBtn" class="button load-reviews-btn">
