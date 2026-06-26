@@ -19,9 +19,7 @@ use App\RequestValidator;
 
 header('Content-Type: application/json');
 
-require_once 'config/db.php';
-
-session_start();
+require_once __DIR__ . '/config/bootstrap.php';
 
 $data = json_decode((string) file_get_contents('php://input'), true) ?? [];
 
@@ -60,12 +58,12 @@ if (empty($errors)) {
 
     $resp = [
         'status'  => 'success',
-        'message' => 'Дякуємо, ' . $name . '! Ваша заявка успішно отримана.',
+        'message' => t('form.success', ['name' => $name]),
     ];
 } else {
     $resp = [
         'status'  => 'error',
-        'message' => 'Помилки: ' . htmlspecialchars(implode(' ', $errors)),
+        'message' => t('form.errors', ['errors' => htmlspecialchars(implode(' ', $errors))]),
     ];
 }
 

@@ -5,9 +5,8 @@ declare(strict_types=1);
 use App\RequestRepository;
 use App\RequestValidator;
 
-require_once 'config/auth.php';
+require_once __DIR__ . '/config/bootstrap.php';
 require_admin();
-require_once 'config/db.php';
 
 $repo = new RequestRepository($pdo);
 $errors = [];
