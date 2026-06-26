@@ -1,67 +1,83 @@
 > 🌐 **Live demo (auto-updated each restart):** https://reliance-around-kelkoo-cure.trycloudflare.com  <!-- live-url -->
 
-# Sphynx Cattery Website — PHP/MySQL Coursework Project
+# Sphynx Cattery Website — PHP/MySQL
 
-A small full-stack web project: a fictional Sphynx-cat cattery storefront
-("Лисі Котики Прага", Prague) with static pages, a kitten catalog backed by
-MySQL (with a per-kitten detail page), a public contact/booking form, and a
-session-gated admin panel doing full CRUD over a MySQL table — built across
-a series of front-end/back-end web development lab assignments at
-Y. O. Paton Vocational College of Welding and Electronics, specialty 123
-Computer Engineering.
+A full-stack web project: a fictional Sphynx-cat cattery storefront
+("Лисі Котики Прага", Prague) with a multilingual front end, two MySQL-backed
+catalogs (kittens and treats), user accounts, a shopping cart, a public
+contact/booking form, and a role-gated admin panel doing full CRUD over the
+database. New catalog cards are added from a phone through a companion
+Telegram bot, [sphynx-cats-crm-bot](https://github.com/BreraDMR/sphynx-cats-crm-bot).
 
-New kitten cards are added through a companion Telegram bot,
-[sphynx-cats-crm-bot](https://github.com/BreraDMR/sphynx-cats-crm-bot),
-talking to `api/cats.php` over a machine-to-machine API key rather than the
-admin session -- see that repo for the bot itself.
+It started as a series of front-end/back-end lab assignments at
+Y. O. Paton Vocational College of Welding and Electronics (specialty 123,
+Computer Engineering) and was then grown into something closer to a real
+product, end to end. It's a **learning/portfolio project**, not a real
+business — you can't actually buy a cat here.
 
-This is a learning project, not a real business or a real website anyone
-can book a cat through — see [`docs/report.md`](docs/report.md) for what
-each part of the course it was built for, and for the full editor's-notes
-list of everything found and fixed during two review passes: broken admin
-authentication, a CSRF-able delete, a reflected XSS, two disconnected data
-pipelines, a broken CSS asset path, and more.
+## The problems it solves
 
-Past the bug-fixing pass, the backend was also restructured to look like
-something closer to a junior/mid-level PHP project rather than coursework
-PHP: SQL lives in one repository class instead of being copy-pasted across
-six pages, config comes from `.env` instead of being hardcoded, every form
-that changes data is CSRF-protected (not just delete), and there's a real
-PHPUnit test suite for the actual PHP code (not just a Python stand-in).
+The interesting part of this project isn't the cat storefront — it's the set
+of concrete problems each feature was added to fix.
 
-## Screenshots
+- **Listings were written by non-native, non-copywriter admins → typos and
+  clumsy phrasing on a public page.** Every kitten/treat description added
+  through the bot is first run past a **local AI model (Ollama)** for a
+  grammar/style pass. The admin sees their text and the AI's suggestion
+  **side by side and chooses** — the AI never silently overwrites anything.
+  Cheap, private (runs on our own hardware, no cloud), and it keeps the
+  catalog readable without hiring an editor.
+- **The "speed vs. quality" tradeoff for that AI check.** A small model is
+  instant but plain; a bigger model writes better but is slower on CPU. So
+  the bot lets each admin **pick the model per-account** (`/model`): a fast
+  `qwen2.5:3b` or a smarter `qwen2.5:14b`. Both stay loaded at once, so
+  switching is free.
+- **Updating the catalog required a laptop and the web admin panel.** Now a
+  card — photo included — is added straight from Telegram on a phone, by any
+  **owner-approved** admin, with no shared password to leak.
+- **The audience is in three countries.** The whole UI is localized in
+  **English (default), Czech and Ukrainian**, switchable with one click; the
+  choice sticks across pages and visits.
+- **Customer leads were visible to everyone.** The contact-form/booking
+  submissions used to sit behind a link in the public menu. They're now
+  behind real **user accounts with roles** — only an `admin` sees the
+  "Requests" tab and pages at all.
+- **Visitors had no way to collect what they liked.** Logged-in users get a
+  **cart** (kittens + treats), and "checkout" turns the cart into a booking
+  request that lands in the admin panel and pings the team in Telegram —
+  reusing the existing request pipeline instead of inventing a new one.
+- **Two product lines, one pattern.** Treats ("вкусняшки") are a second
+  catalog that deliberately mirrors the kitten one (same repository/validator
+  shape, same bot-driven workflow, same public read API), showing the design
+  scales to more than one thing without copy-paste drift.
 
-| Homepage catalog (live filter/search) | Admin panel (status filters + pagination) |
-|---|---|
-| ![Homepage](docs/screenshots/homepage.png) | ![Admin panel](docs/screenshots/admin.png) |
+## How sign-in works
 
-[Contact/booking form →](docs/screenshots/contacts.png)
+- **Email + password** registration/login is the always-on path (bcrypt,
+  CSRF-protected, session-based).
+- **"Sign in with Google / GitHub"** is implemented as a real OAuth 2.0
+  authorization-code flow (no SDK, just a few cURL calls in `oauth.php`). The
+  buttons are **feature-flagged**: they only appear once a provider's
+  client id/secret are configured, because real OAuth needs a **stable public
+  URL** to register its redirect. On the demo's throwaway tunnel URL they stay
+  hidden and email/password is used instead.
+
+## Tech
+
+PHP 8.3 + MySQL/MariaDB (PDO), no framework — one file per route, with SQL
+isolated in repository classes (`src/`) and a flat-key i18n layer
+(`config/i18n.php` + `lang/{en,cs,uk}.php`). Catalogs render client-side from
+JSON APIs (`api/cats.php`, `api/treats.php`); the cart is a small JSON API
+(`api/cart.php`). Runs as Docker containers (PHP-Apache + MariaDB) behind a
+Cloudflare tunnel.
 
 ## Repository layout
 
 | Path | Contents |
 |---|---|
-| [`site/`](site/) | The website: public pages, the kitten catalog (`api/cats.php`, key-authenticated for the Telegram bot), the contact-form API, and the admin CRUD panel (PHP + MySQL via PDO). See `site/src/` for the repository/validator classes and `site/tests/` for the PHPUnit suite. |
-| [`docs/report.md`](docs/report.md) | What the project covers, how to run it, and the full editor's-notes list of everything found and fixed. |
-| [`tools/validate_request.py`](tools/validate_request.py) | A Python mirror of the PHP-side form validation rules, with unit tests — predates the real PHPUnit suite in `site/tests/`, kept since it doesn't need PHP installed to run. |
-
-## What's verified vs. what isn't
-
-- `site/vendor/bin/phpunit` (after `composer install` in `site/`) —
-  **38/38 tests pass**, covering `RequestRepository` (CRUD, status
-  filtering, pagination) and `CatRepository` (CRUD, slug generation,
-  publish/draft visibility) against an in-memory SQLite database, plus
-  `RequestValidator`/`RequestStatus`/`CatValidator`.
-- `python3 -m unittest discover -s tests` in `tools/` — **7/7 tests pass**,
-  the older Python-side mirror of the validation rules.
-- The PHP/MySQL site was run end-to-end against a real local PHP built-in
-  server + MySQL, twice (once after the initial bug-fix pass, again after
-  the architecture rework below) -- import `database.sql`, `php -S`,
-  exercise every route with `curl`. The second pass caught a real bug the
-  SQLite-backed unit tests couldn't: MySQL's PDO driver rejects `LIMIT`/
-  `OFFSET` bound as plain (string) parameters, which SQLite tolerates --
-  see `docs/report.md` Editor's notes. Both test databases and servers
-  were torn down afterwards; nothing from those runs is in this repo.
+| [`site/`](site/) | The website. `src/` — repository/validator/record classes (Cat, Treat, User, Cart, Request). `config/` — bootstrap, db, auth (sessions+roles), i18n, oauth, labels. `lang/` — EN/CS/UK dictionaries. `api/` — public catalog + cart JSON endpoints (catalog writes are bot-only, gated by `X-API-Key`). `tests/` — PHPUnit suite. |
+| [`docs/report.md`](docs/report.md) | What each part of the course it covers, plus the editor's-notes log of bugs found and fixed during review. |
+| [`tools/validate_request.py`](tools/validate_request.py) | A Python mirror of the form-validation rules (predates the PHPUnit suite; kept because it needs no PHP). |
 
 ## Running it locally
 
@@ -71,14 +87,27 @@ composer install
 cp .env.example .env          # defaults match a local MAMP/XAMPP MySQL install
 # import database.sql into the database named in .env, then:
 php -S localhost:8000
-vendor/bin/phpunit            # 23/23, no database needed for this part
+vendor/bin/phpunit            # 61 tests, in-memory SQLite, no MySQL needed
 ```
 
-Default demo admin login at `/login.php`: `admin` / `sphynx-admin-2026`
-(see `.env.example`).
+Demo admin login at `/login.php`: **`admin@sphynx.local` / `sphynx-admin-2026`**
+(seeded by `database.sql`; change it before any real exposure). Regular
+visitors just register at `/register.php`. OAuth sign-in stays hidden until
+`SITE_BASE_URL` + provider credentials are set in `.env` (see `.env.example`).
+
+## What's verified
+
+- **`vendor/bin/phpunit` — 61 tests pass**, covering the Request/Cat/Treat
+  repositories (CRUD, slug generation, publish/draft visibility), the cart
+  (quantity rules, per-user counts), the User repository (email/OAuth lookup,
+  linking) and every validator, against in-memory SQLite.
+- The full stack (i18n, accounts+roles, cart add/checkout, treats, admin-only
+  requests) was run end-to-end against the live Docker deployment and passed
+  a scripted in-container smoke test; the strong AI model was verified fixing
+  a Ukrainian listing over the same endpoint the bot uses.
 
 ## License
 
 Licensed under [PolyForm Noncommercial 1.0.0](LICENSE) — free for personal,
-educational, and other noncommercial use. For a commercial license,
-contact Damir.
+educational, and other noncommercial use. For a commercial license, contact
+Damir.
