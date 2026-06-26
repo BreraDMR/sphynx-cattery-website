@@ -21,7 +21,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="text-center mb-30">
             <input type="text" id="searchInput" class="search-input" placeholder="<?= te('catalog.search') ?>">
 
-            <div class="mt-15">
+            <div class="mt-15 filter-row">
                 <button class="button filter-btn active" data-color="all"><?= te('color.all') ?></button>
                 <?php foreach (CAT_FILTER_COLORS as $__value => $__key): ?>
                     <button class="button filter-btn" data-color="<?= htmlspecialchars($__value) ?>"><?= te($__key) ?></button>

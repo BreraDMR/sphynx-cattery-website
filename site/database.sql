@@ -135,3 +135,34 @@ CREATE TABLE IF NOT EXISTS cart_items (
     UNIQUE KEY uniq_cart_item (user_id, item_type, item_id),
     CONSTRAINT fk_cart_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Extra demo seeds (2026-06-26): fill out thin filter categories so none is
+-- empty -- more blue/"other" cats and more treats per category. INSERT IGNORE
+-- on the UNIQUE slug makes this safe to run more than once.
+
+INSERT IGNORE INTO cats (slug, name, color, age_months, price_eur, description, photo_path, status, created_by) VALUES
+('chornyi-sfinks-nuar', 'Чорний Сфінкс Нуар', 'чорний', 4, 1480, 'Оксамитово-чорна шкіра, золотисті очі. Дуже відданий і любить спати поряд з господарем.', 'assets/images/sphynx-black.webp', 'published', 'seed'),
+('bilyi-sfinks-snizhok', 'Білий Сфінкс Сніжок', 'білий', 3, 1620, 'Білосніжний пустун із рожевими вушками. Обожнює гратися й миттєво знаходить спільну мову з дітьми.', 'assets/images/sphynx-white.webp', 'published', 'seed'),
+('blakytnyi-sfinks-dymok', 'Блакитний Сфінкс Димок', 'блакитний', 4, 1550, 'Рівний димчасто-блакитний окрас, спокійний характер. Чудово підходить для квартири.', 'assets/images/sphynx-blue.webp', 'published', 'seed'),
+('blakytnyi-sfinks-azur', 'Блакитний Сфінкс Азур', 'блакитний', 5, 1530, 'Граційний кіт із виразними очима. Привчений до лотка та кігтеточки, любить теплі пледи.', 'assets/images/sphynx-blue.webp', 'published', 'seed'),
+('blakytnyi-sfinks-mira', 'Блакитна Сфінкс Міра', 'блакитний', 2, 1600, 'Ласкава дівчинка блакитного окрасу, дуже товариська й цікава до всього нового.', 'assets/images/sphynx-blue.webp', 'published', 'seed'),
+('inshyi-sfinks-mokko', 'Шоколадний Сфінкс Мокко', 'інший', 3, 1570, 'Рідкісний шоколадний відтінок шкіри. Грайливий і кмітливий, швидко вчить трюки.', 'assets/images/sphynx-cream.webp', 'published', 'seed'),
+('inshyi-sfinks-koryca', 'Сфінкс Кориця', 'інший', 4, 1490, 'Теплий рудувато-коричневий окрас. Лагідна та спокійна, любить сидіти на руках.', 'assets/images/sphynx-cream.webp', 'published', 'seed'),
+('inshyi-sfinks-arlekin', 'Сфінкс Арлекін', 'інший', 5, 1650, 'Ефектний двоколірний (арлекін) окрас. Активний і допитливий, справжня окраса дому.', 'assets/images/sphynx-black.webp', 'published', 'seed'),
+('inshyi-sfinks-perlyna', 'Сфінкс Перлина', 'інший', 2, 1700, 'Незвичний перламутровий відтінок шкіри з бузковим підтоном. Ніжна й тендітна красуня.', 'assets/images/sphynx-lilac.webp', 'published', 'seed'),
+('kremovyi-sfinks-vanil', 'Кремовий Сфінкс Ваніль', 'кремовий', 3, 1440, 'М''який ванільно-кремовий окрас. Дуже домашня й лагідна, любить спати під ковдрою.', 'assets/images/sphynx-cream.webp', 'published', 'seed'),
+('kremovyi-sfinks-karamel', 'Кремовий Сфінкс Карамель', 'кремовий', 5, 1410, 'Карамельний відтінок і бурштинові очі. Спокійний характер, добре ладнає з іншими тваринами.', 'assets/images/sphynx-cream.webp', 'published', 'seed'),
+('lylovyi-sfinks-buzok', 'Лиловий Сфінкс Бузок', 'лиловий', 4, 1520, 'Ніжний лиловий (бузковий) окрас. Граційний і фотогенічний, любить увагу гостей.', 'assets/images/sphynx-lilac.webp', 'published', 'seed'),
+('lylovyi-sfinks-fialka', 'Лилова Сфінкс Фіалка', 'лиловий', 2, 1560, 'Маленька лилова красуня з великими очима. Допитлива пустунка, привчена до лотка.', 'assets/images/sphynx-lilac.webp', 'published', 'seed');
+
+INSERT IGNORE INTO treats (slug, name, category, price_eur, weight_g, description, photo_path, status, created_by) VALUES
+('beef-liver-treats', 'Beef Liver Treats', 'snacks', 6, 70, 'Crunchy freeze-dried beef liver bites — a single-ingredient, irresistible high-value reward.', NULL, 'published', 'seed'),
+('tuna-flakes', 'Tuna Flakes', 'snacks', 5, 50, 'Light, flaky tuna treats packed with protein; great as a meal topper or a training reward.', NULL, 'published', 'seed'),
+('sensitive-skin-food', 'Sensitive Skin Formula', 'food', 22, 2000, 'Limited-ingredient dry food for cats with delicate skin — gentle on digestion, rich in omega oils.', NULL, 'published', 'seed'),
+('high-energy-pate', 'High-Energy Pâté', 'food', 16, 800, 'Smooth, calorie-dense pâté that helps a Sphynx keep weight on and stay warm.', NULL, 'published', 'seed'),
+('probiotic-powder', 'Probiotic Powder', 'vitamins', 13, 90, 'Daily probiotic supplement that supports gut flora and steady digestion.', NULL, 'published', 'seed'),
+('digestive-care-paste', 'Digestive Care Paste', 'vitamins', 10, 75, 'Tasty paste with prebiotics and malt to ease digestion and reduce hairballs.', NULL, 'published', 'seed'),
+('catnip-banana', 'Catnip Banana', 'toys', 6, 0, 'Soft catnip-stuffed banana toy — the classic kick-and-bunny-kick favourite.', NULL, 'published', 'seed'),
+('led-laser-pointer', 'LED Laser Pointer', 'toys', 9, 0, 'Rechargeable laser pointer for energetic chase sessions; tires out even the liveliest Sphynx.', NULL, 'published', 'seed'),
+('microfiber-bath-towel', 'Microfiber Bath Towel', 'care', 13, 200, 'Ultra-absorbent microfiber towel sized for cats — dries a freshly bathed Sphynx in seconds.', NULL, 'published', 'seed'),
+('protective-paw-balm', 'Protective Paw Balm', 'care', 8, 30, 'Nourishing balm that protects sensitive paw pads from dry floors and cold surfaces.', NULL, 'published', 'seed');
