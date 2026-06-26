@@ -4,28 +4,33 @@ declare(strict_types=1);
 
 use App\CatRepository;
 
-require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/config/bootstrap.php';
 
 $repo = new CatRepository($pdo);
 $slug = isset($_GET['slug']) ? (string) $_GET['slug'] : '';
 $cat = $slug !== '' ? $repo->findPublishedBySlug($slug) : null;
 
-include __DIR__ . '/includes/header.php';
+$page_title = $cat !== null
+    ? $cat->name . ' • ' . t('common.brand')
+    : t('cat.not_found');
+
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <?php if ($cat === null): ?>
     <section>
         <div class="container">
-            <h2 class="section-title">Кошеня не знайдено</h2>
-            <p class="text-center">Можливо, його вже забронювали або посилання застаріле.</p>
-            <p class="text-center"><a href="index.html#catalog" class="button">До каталогу</a></p>
+            <h2 class="section-title"><?= te('cat.not_found') ?></h2>
+            <p class="text-center"><?= te('cat.not_found.text') ?></p>
+            <p class="text-center"><a href="index.php#catalog" class="button"><?= te('cat.back') ?></a></p>
         </div>
     </section>
 <?php else: ?>
+    <?php $ageLabel = $cat->ageMonths . ' ' . t('catalog.months'); ?>
     <section class="hero">
         <div class="container">
             <h1><?= htmlspecialchars(mb_strtoupper($cat->name)) ?></h1>
-            <p><?= htmlspecialchars(ucfirst($cat->color)) ?> сфінкс • <?= htmlspecialchars($cat->ageLabel()) ?></p>
+            <p><?= te('cat.detail.subtitle', ['color' => cat_color_label($cat->color), 'age' => $ageLabel]) ?></p>
         </div>
     </section>
 
@@ -36,11 +41,17 @@ include __DIR__ . '/includes/header.php';
             <div class="cat-detail-info">
                 <p class="price price-highlight"><?= $cat->priceEur ?> €</p>
                 <p><?= nl2br(htmlspecialchars($cat->description)) ?></p>
-                <a href="contacts.html?cat=<?= urlencode($cat->name) ?>" class="button">Зв'язатися щодо цього кошеня</a>
-                <a href="index.html#catalog" class="button">← До каталогу</a>
+
+                <?php if (is_logged_in()): ?>
+                    <button type="button" class="button add-cart-btn" data-type="cat" data-id="<?= $cat->id ?>"><?= te('common.add_to_cart') ?></button>
+                <?php else: ?>
+                    <a href="login.php?next=<?= urlencode('cat.php?slug=' . $cat->slug) ?>" class="button"><?= te('common.login_to_buy') ?></a>
+                <?php endif; ?>
+                <a href="contacts.php?cat=<?= urlencode($cat->name) ?>" class="button"><?= te('cat.contact') ?></a>
+                <a href="index.php#catalog" class="button"><?= te('cat.back') ?></a>
             </div>
         </div>
     </section>
 <?php endif; ?>
 
-<?php include __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

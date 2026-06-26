@@ -59,3 +59,79 @@ INSERT INTO cats (slug, name, color, age_months, price_eur, description, photo_p
 ('blakytnyi-sfinks-leo', 'Блакитний Сфінкс Лео', 'блакитний', 2, 1590, 'Представник чемпіонської лінії, насичений блакитний окрас шкіри. Контактний, не боїться нових людей.', 'assets/images/sphynx-blue.webp', 'published', 'seed'),
 ('kremovyi-sfinks-simmi', 'Кремовий Сфінкс Сіммі', 'кремовий', 6, 1420, 'Тепло-кремовий відтінок шкіри, дуже спокійний і вже привчений до інших котів у домі.', 'assets/images/sphynx-cream.webp', 'published', 'seed'),
 ('lylovyi-sfinks-grei', 'Лиловий Сфінкс Грей', 'лиловий', 3, 1510, 'Рідкісний лиловий (сизий) окрас із яскраво-зеленими очима. Граційний і дуже фотогенічний.', 'assets/images/sphynx-lilac.webp', 'published', 'seed');
+
+-- ============================================================================
+-- Users -- site accounts (added alongside i18n + cart + OAuth). A user can
+-- have a bcrypt password (email/password sign-up) and/or an OAuth identity
+-- (oauth_provider + oauth_id). role='admin' replaces the old single hard-coded
+-- admin login: the admin pages and the bot's /requests view are gated by it.
+--
+-- Seed admin (email/password login): admin@sphynx.local. The password_hash
+-- below is the original coursework demo hash -- the LIVE deploy overwrites it
+-- with the rotated hash from site.env (see the WS6 migration), so do not rely
+-- on this default beyond a fresh local/CI install.
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(190) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NULL,
+    name VARCHAR(100) NOT NULL,
+    oauth_provider VARCHAR(20) NULL,
+    oauth_id VARCHAR(100) NULL,
+    role VARCHAR(20) NOT NULL DEFAULT 'user',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT IGNORE INTO users (email, password_hash, name, role) VALUES
+('admin@sphynx.local', '$2b$10$/aHMxiyAvkalENkqc2.5xOQJTdj6ua/Mb2qJ8TIbp6RUb9yJzqQhi', 'Administrator', 'admin');
+
+-- ============================================================================
+-- Treats ("вкусняшки") -- second catalog, a sibling of `cats`. Same shape:
+-- public read via api/treats.php (GET), bot-only writes (POST/DELETE with
+-- X-API-Key). `category` is a canonical key (see TreatValidator::CATEGORIES),
+-- labels are translated in the UI. 10 demo items below.
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS treats (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    slug VARCHAR(150) NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    category VARCHAR(30) NOT NULL,
+    price_eur INT UNSIGNED NOT NULL,
+    weight_g INT UNSIGNED NOT NULL DEFAULT 0,
+    description TEXT NOT NULL,
+    photo_path VARCHAR(255) NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'published',
+    created_by VARCHAR(100) NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO treats (slug, name, category, price_eur, weight_g, description, photo_path, status, created_by) VALUES
+('chicken-jerky-bites', 'Chicken Jerky Bites', 'snacks', 6, 80, 'Soft air-dried chicken bites — a high-protein reward Sphynxes love, with no grain or artificial colours.', NULL, 'published', 'seed'),
+('salmon-cream-tubes', 'Salmon Cream Tubes', 'snacks', 5, 60, 'Lickable salmon cream tubes, rich in omega-3 for healthy skin — perfect for a hairless cat.', NULL, 'published', 'seed'),
+('grain-free-kitten-food', 'Grain-Free Kitten Food', 'food', 19, 2000, 'Complete grain-free dry food for kittens, with extra calories to support the fast metabolism of a Sphynx.', NULL, 'published', 'seed'),
+('adult-sphynx-food', 'Adult Sphynx Formula', 'food', 24, 3000, 'Balanced adult formula tuned for the higher energy needs of hairless breeds, with taurine and biotin.', NULL, 'published', 'seed'),
+('immune-multivitamin', 'Immune Multivitamin', 'vitamins', 12, 100, 'Daily multivitamin paste supporting immunity and coat — sorry, skin! — health. Veterinarian recommended.', NULL, 'published', 'seed'),
+('omega-skin-drops', 'Omega Skin Drops', 'vitamins', 14, 50, 'Omega-3/6 oil drops for soft, healthy Sphynx skin; just add a few drops to the daily meal.', NULL, 'published', 'seed'),
+('feather-teaser-wand', 'Feather Teaser Wand', 'toys', 8, 0, 'Interactive feather wand for active play — keeps a curious Sphynx busy and bonded with you.', NULL, 'published', 'seed'),
+('plush-mouse-trio', 'Plush Mouse Trio', 'toys', 7, 0, 'Set of three catnip-filled plush mice, just the right size for batting around the apartment.', NULL, 'published', 'seed'),
+('gentle-bath-shampoo', 'Gentle Bath Shampoo', 'care', 11, 250, 'Mild hypoallergenic shampoo for the regular baths hairless cats need to keep their skin clean.', NULL, 'published', 'seed'),
+('soft-ear-wipes', 'Soft Ear Wipes', 'care', 9, 120, 'Pack of gentle ear-cleaning wipes — Sphynxes produce more ear wax than coated breeds and need regular care.', NULL, 'published', 'seed');
+
+-- ============================================================================
+-- Cart items -- one row per product (cat or treat) in a logged-in user's
+-- cart. Cats are unique (qty always 1); treats can be bought in multiples.
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS cart_items (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    item_type VARCHAR(10) NOT NULL,
+    item_id INT UNSIGNED NOT NULL,
+    qty INT UNSIGNED NOT NULL DEFAULT 1,
+    added_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uniq_cart_item (user_id, item_type, item_id),
+    CONSTRAINT fk_cart_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

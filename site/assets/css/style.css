@@ -638,3 +638,155 @@ form {
 .data-table th:last-child {
     white-space: nowrap;
 }
+
+/* ==========================================================================
+   Header actions: language switcher + auth/cart (added with i18n + accounts)
+   ========================================================================== */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.logo-link {
+    display: inline-block;
+    line-height: 0;
+}
+
+.lang-switch {
+    display: flex;
+    gap: 4px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.lang-link {
+    color: #ccc;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 4px 8px;
+}
+
+.lang-link:hover {
+    color: #ff9800;
+}
+
+.lang-link.active {
+    background: #ff9800;
+    color: #000;
+}
+
+.header-actions .auth-link,
+.header-actions .account-link {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.header-actions .auth-link:hover,
+.header-actions .account-link:hover {
+    color: #ff9800;
+}
+
+.auth-register {
+    padding: 6px 16px;
+}
+
+.cart-link {
+    position: relative;
+    font-size: 22px;
+    text-decoration: none;
+    line-height: 1;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background: #ff9800;
+    color: #000;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    padding: 0 4px;
+}
+
+.nav-admin {
+    color: #ff9800 !important;
+}
+
+/* ==========================================================================
+   Auth pages (login / register) + OAuth buttons
+   ========================================================================== */
+.auth-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 460px;
+    margin: 0 auto;
+}
+
+.auth-divider {
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    line-height: 0.1em;
+    margin: 24px 0;
+}
+
+.auth-divider span {
+    background: #fff;
+    padding: 0 12px;
+    color: #888;
+    font-size: 14px;
+}
+
+.oauth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.oauth-btn {
+    text-align: center;
+    width: 100%;
+    color: #fff;
+}
+
+.oauth-google {
+    background: #4285f4;
+    color: #fff;
+}
+
+.oauth-github {
+    background: #24292e;
+    color: #fff;
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* ==========================================================================
+   Aside block (about.php / delivery.php)
+   ========================================================================== */
+.aside {
+    background: #fff7e8;
+    padding: 40px 0;
+}
+
+.aside ul {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.8;
+}
