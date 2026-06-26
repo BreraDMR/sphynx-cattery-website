@@ -1,4 +1,4 @@
-> 🌐 **Live demo (auto-updated each restart):** https://screenshots-direction-tone-judy.trycloudflare.com  <!-- live-url -->
+> 🌐 **Live demo (auto-updated each restart):** https://reliance-around-kelkoo-cure.trycloudflare.com  <!-- live-url -->
 
 # Sphynx Cattery Website — PHP/MySQL Coursework Project
 
