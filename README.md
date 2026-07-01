@@ -1,4 +1,4 @@
-> 🌐 **Live demo (auto-updated each restart):** https://reliance-around-kelkoo-cure.trycloudflare.com  <!-- live-url -->
+> 🌐 **Live demo (auto-updated each restart):** https://closed-integer-highlight-lamp.trycloudflare.com  <!-- live-url -->
 
 <div align="center">
 
