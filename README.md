@@ -1,4 +1,4 @@
-> 🌐 **Live demo (auto-updated each restart):** https://office-handled-blanket-carolina.trycloudflare.com  <!-- live-url -->
+> 🌐 **Live demo (auto-updated each restart):** https://examining-study-inspections-flashers.trycloudflare.com  <!-- live-url -->
 
 <div align="center">
 
