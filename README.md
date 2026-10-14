@@ -1,5 +1,3 @@
-> 🌐 **Live demo (auto-updated each restart):** https://attempting-bedroom-andale-recording.trycloudflare.com  <!-- live-url -->
-
 <div align="center">
 
 # 🐱 Sphynx Cattery Website
@@ -13,6 +11,8 @@
 [![i18n](https://img.shields.io/badge/i18n-EN%20%C2%B7%20CS%20%C2%B7%20UK-blueviolet?style=for-the-badge)](site/lang/)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white&style=for-the-badge)](site/)
 [![license](https://img.shields.io/badge/license-PolyForm--NC-blue?style=for-the-badge)](LICENSE)
+
+**[Live demo → sphynx-cattery-demo.vercel.app](https://sphynx-cattery-demo.vercel.app)** · static snapshot in EN / CS / UK, forms and admin are off ([how it's built](docs/static-demo.md))
 
 </div>
 
